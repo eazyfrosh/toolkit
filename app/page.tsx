@@ -204,7 +204,7 @@ export default function Home() {
     notify(`Preparing ${type.toUpperCase()}…`);
     const c = document.createElement('canvas');
     c.width = 900;
-    c.height =
+    const contentHeight =
       template.id === 'mono'
         ? 1310
         : template.id === 'citrus'
@@ -220,6 +220,8 @@ export default function Home() {
                   : template.id === 'dark-blue'
                     ? 1600
                     : 1200;
+    const safetyFooterHeight = 52;
+    c.height = contentHeight + safetyFooterHeight;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -261,14 +263,6 @@ export default function Home() {
       x.fillStyle = '#aeb0b4';
       x.font = '30px Arial';
       x.fillText(form.date || 'Demo date', 450, 638);
-      x.save();
-      x.translate(450, 610);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.76;
-      x.fillStyle = '#ff2438';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'mono') {
       const img = new Image();
       img.src = '/mono-reference.jpg';
@@ -303,14 +297,6 @@ export default function Home() {
         x.fillText(recipient.slice(0, split), 450, 652);
         x.fillText(recipient.slice(split), 450, 732);
       }
-      x.save();
-      x.translate(450, 624);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.78;
-      x.fillStyle = '#ff263a';
-      x.font = 'bold 78px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'citrus') {
       const img = new Image();
       img.src = '/citrus-reference.jpg';
@@ -343,15 +329,6 @@ export default function Home() {
       x.fillText(form.citrusRecipient || 'sample-address', 830, 705);
       x.font = '29px Arial';
       x.fillText(form.citrusFee || '0 BTC ($0.00)', 830, 838);
-      x.save();
-      x.translate(450, 640);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.78;
-      x.fillStyle = '#ff263a';
-      x.textAlign = 'center';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'orbit') {
       const img = new Image();
       img.src = '/orbit-reference.jpg';
@@ -394,15 +371,6 @@ export default function Home() {
       x.fillText(form.orbitDate || 'Demo date', 40, 1318);
       x.font = '39px Arial';
       x.fillText(form.orbitHandle || '@SampleUser', 40, 1484);
-      x.save();
-      x.translate(450, 820);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.78;
-      x.fillStyle = '#ff263a';
-      x.textAlign = 'center';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'blue') {
       const img = new Image();
       img.src = '/blue-reference.jpg';
@@ -457,14 +425,6 @@ export default function Home() {
       x.fillStyle = '#f5f5f7';
       x.font = '49px Arial';
       x.fillText(form.blueLink || 'View transaction', 450, 1573);
-      x.save();
-      x.translate(450, 1000);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.82;
-      x.fillStyle = '#ff263a';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'indigo') {
       const img = new Image();
       img.src = '/indigo-reference.jpg';
@@ -534,14 +494,6 @@ export default function Home() {
       x.fillStyle = '#fff';
       x.font = '36px Arial';
       x.fillText(form.indigoDone || 'Done', 450, 1856);
-      x.save();
-      x.translate(450, 980);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.82;
-      x.fillStyle = '#ff263a';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'black') {
       const img = new Image();
       img.src = '/black-reference.jpg';
@@ -592,14 +544,6 @@ export default function Home() {
       x.fillStyle = '#f2f2f2';
       x.font = 'bold 36px Arial';
       x.fillText(form.blackDone || 'Done', 450, 1720);
-      x.save();
-      x.translate(450, 930);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.84;
-      x.fillStyle = '#ff263a';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else if (template.id === 'dark-blue') {
       const img = new Image();
       img.src = '/dark-blue-reference.jpg';
@@ -662,15 +606,6 @@ export default function Home() {
       x.fillText(txidWords.slice(txidMid).join(' '), 840, 763);
       x.fillText(form.darkBlueWallet || 'Sample Wallet', 840, 856);
       x.fillText(form.darkBlueDate || 'Demo date', 840, 949);
-      x.save();
-      x.translate(450, 735);
-      x.rotate(-0.28);
-      x.globalAlpha = 0.84;
-      x.fillStyle = '#ff263a';
-      x.textAlign = 'center';
-      x.font = 'bold 82px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     } else {
       x.fillStyle = '#fff';
       x.fillRect(0, 0, 900, 1200);
@@ -696,15 +631,23 @@ export default function Home() {
       x.fillText('Total', 75, 520);
       x.textAlign = 'right';
       x.fillText(`$${total}`, 825, 520);
-      x.save();
-      x.translate(450, 850);
-      x.rotate(-0.3);
-      x.globalAlpha = 0.13;
-      x.fillStyle = '#c52233';
-      x.font = 'bold 75px Arial';
-      x.fillText('SAMPLE ONLY', 0, 0);
-      x.restore();
     }
+    x.save();
+    x.globalAlpha = 1;
+    x.fillStyle = '#fff3cd';
+    x.fillRect(0, contentHeight, 900, safetyFooterHeight);
+    x.fillStyle = '#d69e00';
+    x.fillRect(0, contentHeight, 900, 2);
+    x.textAlign = 'center';
+    x.textBaseline = 'middle';
+    x.fillStyle = '#9f1239';
+    x.font = 'bold 21px Arial';
+    x.fillText(
+      'SAMPLE ONLY • NOT A REAL TRANSACTION',
+      450,
+      contentHeight + safetyFooterHeight / 2 + 1,
+    );
+    x.restore();
     const url = c.toDataURL();
     if (type === 'png') {
       const a = document.createElement('a');
@@ -1360,7 +1303,7 @@ function Editor({
           </div>
           <div
             ref={receiptRef}
-            className={`receipt ${template.id}`}
+            className={`receipt ${template.id} with-safety-footer`}
             style={{ '--accent': template.accent } as React.CSSProperties}
           >
             {template.id === 'studio' ? (
@@ -1386,7 +1329,9 @@ function Editor({
                 <div className="studio-copy studio-date">
                   {form.date || 'Demo date'}
                 </div>
-                <div className="watermark image-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'mono' ? (
               <>
@@ -1405,7 +1350,9 @@ function Editor({
                     {form.monoRecipient || 'sample@example.com'}
                   </span>
                 </div>
-                <div className="watermark mono-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'citrus' ? (
               <>
@@ -1432,7 +1379,9 @@ function Editor({
                 <span className="citrus-value citrus-fee">
                   {form.citrusFee || '0 BTC ($0.00)'}
                 </span>
-                <div className="watermark citrus-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'orbit' ? (
               <>
@@ -1468,7 +1417,9 @@ function Editor({
                 <span className="orbit-copy orbit-handle">
                   {form.orbitHandle || '@SampleUser'}
                 </span>
-                <div className="watermark orbit-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'blue' ? (
               <>
@@ -1495,7 +1446,9 @@ function Editor({
                 <span className="blue-copy blue-link">
                   {form.blueLink || 'View transaction'}
                 </span>
-                <div className="watermark blue-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'indigo' ? (
               <>
@@ -1528,7 +1481,9 @@ function Editor({
                 <span className="indigo-copy indigo-done">
                   {form.indigoDone || 'Done'}
                 </span>
-                <div className="watermark indigo-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'black' ? (
               <>
@@ -1567,7 +1522,9 @@ function Editor({
                 <span className="black-copy black-done">
                   {form.blackDone || 'Done'}
                 </span>
-                <div className="watermark black-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : template.id === 'dark-blue' ? (
               <>
@@ -1600,7 +1557,9 @@ function Editor({
                 <span className="dark-blue-copy dark-blue-date">
                   {form.darkBlueDate || 'Demo date'}
                 </span>
-                <div className="watermark dark-blue-watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             ) : (
               <>
@@ -1642,7 +1601,9 @@ function Editor({
                   <br />
                   It does not represent a purchase, payment, or transaction.
                 </footer>
-                <div className="watermark">SAMPLE ONLY</div>
+                <div className="watermark safety-footer">
+                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                </div>
               </>
             )}
           </div>

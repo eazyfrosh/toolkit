@@ -795,6 +795,35 @@ button {
   color: #c522331b;
   white-space: nowrap;
 }
+.receipt.with-safety-footer {
+  overflow: visible;
+  margin-bottom: 28px;
+}
+.receipt > .safety-footer {
+  position: absolute;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0;
+  width: auto;
+  height: 28px;
+  z-index: 20;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: none !important;
+  border-top: 1px solid #d69e00;
+  background: #fff3cd;
+  color: #9f1239 !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px !important;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  opacity: 1;
+  text-shadow: none;
+  white-space: nowrap;
+}
 .receipt.mono {
   font-family: var(--font-mono), monospace;
 }
