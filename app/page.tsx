@@ -1051,7 +1051,7 @@ function Gallery({
                   <img
                     src={
                       t.id === 'studio'
-                        ? '/studio-reference.jpg'
+                        ? '/cashapp-library-preview.jpeg'
                         : t.id === 'mono'
                           ? '/mono-reference.jpg'
                           : t.id === 'citrus'
