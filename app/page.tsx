@@ -643,7 +643,7 @@ export default function Home() {
     x.fillStyle = '#9f1239';
     x.font = 'bold 21px Arial';
     x.fillText(
-      'SAMPLE ONLY • NOT A REAL TRANSACTION',
+      'DEMO • NOT A REAL TRANSACTION',
       450,
       contentHeight + safetyFooterHeight / 2 + 1,
     );
@@ -1330,7 +1330,7 @@ function Editor({
                   {form.date || 'Demo date'}
                 </div>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'mono' ? (
@@ -1351,7 +1351,7 @@ function Editor({
                   </span>
                 </div>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'citrus' ? (
@@ -1380,7 +1380,7 @@ function Editor({
                   {form.citrusFee || '0 BTC ($0.00)'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'orbit' ? (
@@ -1418,7 +1418,7 @@ function Editor({
                   {form.orbitHandle || '@SampleUser'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'blue' ? (
@@ -1447,7 +1447,7 @@ function Editor({
                   {form.blueLink || 'View transaction'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'indigo' ? (
@@ -1482,7 +1482,7 @@ function Editor({
                   {form.indigoDone || 'Done'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'black' ? (
@@ -1523,7 +1523,7 @@ function Editor({
                   {form.blackDone || 'Done'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : template.id === 'dark-blue' ? (
@@ -1558,7 +1558,7 @@ function Editor({
                   {form.darkBlueDate || 'Demo date'}
                 </span>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             ) : (
@@ -1602,7 +1602,7 @@ function Editor({
                   It does not represent a purchase, payment, or transaction.
                 </footer>
                 <div className="watermark safety-footer">
-                  SAMPLE ONLY • NOT A REAL TRANSACTION
+                  DEMO • NOT A REAL TRANSACTION
                 </div>
               </>
             )}
