@@ -34,7 +34,7 @@ type Template = {
 const templates: Template[] = [
   {
     id: 'studio',
-    name: 'Studio',
+    name: 'CashApp',
     category: 'Retail',
     accent: '#665cf6',
     description: 'Clean and editorial',
@@ -93,7 +93,7 @@ const historyRows = [
   {
     id: 'SMP-1048',
     title: 'Northstar demo',
-    template: 'Studio',
+    template: 'CashApp',
     amount: '$148.20',
     date: 'Aug 30, 2026',
     status: 'Exported',
@@ -1311,7 +1311,7 @@ function Editor({
                 <img
                   className="studio-fragment studio-avatar"
                   src="/studio-reference.jpg"
-                  alt="Studio receipt avatar"
+                  alt="CashApp receipt avatar"
                 />
                 <div className="studio-completed" aria-label="Completed">
                   <span aria-hidden="true">✓</span>
