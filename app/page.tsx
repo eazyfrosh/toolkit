@@ -49,9 +49,9 @@ const templates: Template[] = [
   {
     id: 'citrus',
     name: 'Citrus',
-    category: 'Food',
-    accent: '#f59e0b',
-    description: 'Warm and friendly',
+    category: 'Crypto',
+    accent: '#2584a8',
+    description: 'Transfer detail',
   },
   {
     id: 'orbit',
@@ -106,6 +106,13 @@ export default function Home() {
     monoMessage: "You've sent",
     monoCurrency: 'USD',
     monoRecipient: 'lcantrell44@hotmail.com',
+    citrusAmount: '-50000',
+    citrusAsset: 'BTC',
+    citrusFiat: '≈ $5,417,300,000.00',
+    citrusDate: 'Today at 2:10 PM',
+    citrusStatus: 'Completed',
+    citrusRecipient: 'bc1qplf...7qrp2v',
+    citrusFee: '600 BTC ($65020200.00)',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -121,7 +128,7 @@ export default function Home() {
     notify(`Preparing ${type.toUpperCase()}…`);
     const c = document.createElement('canvas');
     c.width = 900;
-    c.height = template.id === 'mono' ? 1310 : 1200;
+    c.height = template.id === 'mono' ? 1310 : template.id === 'citrus' ? 1600 : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -211,6 +218,47 @@ export default function Home() {
       x.globalAlpha = 0.78;
       x.fillStyle = '#ff263a';
       x.font = 'bold 78px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'citrus') {
+      const img = new Image();
+      img.src = '/citrus-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1600);
+      x.textAlign = 'center';
+      x.fillStyle = '#fff';
+      x.fillRect(150, 270, 600, 165);
+      x.fillStyle = '#292929';
+      x.font = 'bold 48px Arial';
+      x.fillText(
+        `${form.citrusAmount || '-50000'} ${form.citrusAsset || 'BTC'}`,
+        450,
+        350,
+      );
+      x.fillStyle = '#696969';
+      x.font = '30px Arial';
+      x.fillText(form.citrusFiat || '≈ $0.00', 450, 400);
+      x.fillStyle = '#fafafa';
+      x.fillRect(405, 458, 445, 280);
+      x.fillRect(340, 778, 510, 92);
+      x.textAlign = 'right';
+      x.fillStyle = '#4e4e4e';
+      x.font = '31px Arial';
+      x.fillText(form.citrusDate || 'Demo date', 830, 508);
+      x.fillText(form.citrusStatus || 'Completed', 830, 607);
+      x.fillText(form.citrusRecipient || 'sample-address', 830, 705);
+      x.font = '29px Arial';
+      x.fillText(form.citrusFee || '0 BTC ($0.00)', 830, 838);
+      x.save();
+      x.translate(450, 640);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.78;
+      x.fillStyle = '#ff263a';
+      x.textAlign = 'center';
+      x.font = 'bold 82px Arial';
       x.fillText('SAMPLE ONLY', 0, 0);
       x.restore();
     } else {
@@ -638,13 +686,15 @@ function Gallery({
               className={`mini mini-${t.id}`}
               style={{ '--accent': t.accent } as React.CSSProperties}
             >
-              {t.id === 'studio' || t.id === 'mono' ? (
+              {t.id === 'studio' || t.id === 'mono' || t.id === 'citrus' ? (
                 <>
                   <img
                     src={
                       t.id === 'studio'
                         ? '/studio-reference.jpg'
-                        : '/mono-reference.jpg'
+                        : t.id === 'mono'
+                          ? '/mono-reference.jpg'
+                          : '/citrus-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -753,6 +803,20 @@ function Editor({
                 {field('monoCurrency', 'Currency')}
               </div>
             </>
+          ) : template.id === 'citrus' ? (
+            <>
+              <div className="row">
+                {field('citrusAmount', 'Crypto amount')}
+                {field('citrusAsset', 'Asset')}
+              </div>
+              {field('citrusFiat', 'Fiat equivalent')}
+              <div className="row">
+                {field('citrusDate', 'Date and time')}
+                {field('citrusStatus', 'Status')}
+              </div>
+              {field('citrusRecipient', 'Recipient')}
+              {field('citrusFee', 'Network fee')}
+            </>
           ) : (
             <>
               {field('merchant', 'Display name')}
@@ -829,6 +893,33 @@ function Editor({
                   </span>
                 </div>
                 <div className="watermark mono-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'citrus' ? (
+              <>
+                <img
+                  className="citrus-reference"
+                  src="/citrus-reference.jpg"
+                  alt="Citrus transfer reference"
+                />
+                <div className="citrus-top-value">
+                  <strong>
+                    {form.citrusAmount || '-50000'} {form.citrusAsset || 'BTC'}
+                  </strong>
+                  <span>{form.citrusFiat || '≈ $0.00'}</span>
+                </div>
+                <span className="citrus-value citrus-date">
+                  {form.citrusDate || 'Demo date'}
+                </span>
+                <span className="citrus-value citrus-status">
+                  {form.citrusStatus || 'Completed'}
+                </span>
+                <span className="citrus-value citrus-recipient">
+                  {form.citrusRecipient || 'sample-address'}
+                </span>
+                <span className="citrus-value citrus-fee">
+                  {form.citrusFee || '0 BTC ($0.00)'}
+                </span>
+                <div className="watermark citrus-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>

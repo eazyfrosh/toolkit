@@ -1312,6 +1312,118 @@ button {
   text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
   transform: translate(-50%, -50%) rotate(-18deg);
 }
+.mini-citrus {
+  background: #fff;
+  padding: 0;
+}
+.mini-citrus:before {
+  display: none;
+}
+.mini-citrus > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mini-citrus .image-watermark {
+  font-size: 20px !important;
+}
+.receipt.citrus {
+  width: min(430px, 100%);
+  min-height: 0;
+  aspect-ratio: 720/1280;
+  padding: 0;
+  border-radius: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.citrus-reference {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.citrus-top-value {
+  position: absolute;
+  top: 17.2%;
+  left: 16.5%;
+  right: 16.5%;
+  height: 10.2%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32em;
+  background: #fff;
+  color: #292929;
+  text-align: center;
+}
+.citrus-top-value strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(21px, 5.8vw, 31px);
+  line-height: 1;
+}
+.citrus-top-value span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #696969;
+  font-size: clamp(14px, 3.7vw, 20px);
+  line-height: 1;
+}
+.citrus-value {
+  position: absolute;
+  left: 45%;
+  right: 5.8%;
+  z-index: 2;
+  height: 4.2%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: #fafafa;
+  color: #4e4e4e;
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: clamp(14px, 3.8vw, 20px);
+}
+.citrus-date {
+  top: 29.5%;
+}
+.citrus-status {
+  top: 35.65%;
+}
+.citrus-recipient {
+  top: 41.75%;
+}
+.citrus-fee {
+  top: 48.4%;
+  left: 38%;
+  height: 5.8%;
+  font-size: clamp(13px, 3.55vw, 19px);
+}
+.citrus-watermark {
+  top: 40.5%;
+  z-index: 3;
+  color: #ff263a !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(35px, 10.8vw, 58px) !important;
+  font-weight: 950;
+  letter-spacing: 0.035em;
+  opacity: 0.78;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.9);
+  transform: translate(-50%, -50%) rotate(-18deg);
+}
 @media (max-width: 1000px) {
   .gallery {
     grid-template-columns: repeat(2, 1fr);
