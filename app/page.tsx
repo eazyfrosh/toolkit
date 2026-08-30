@@ -67,6 +67,13 @@ const templates: Template[] = [
     accent: '#3975f6',
     description: 'Success confirmation',
   },
+  {
+    id: 'indigo',
+    name: 'Indigo',
+    category: 'Confirmation',
+    accent: '#2f66b8',
+    description: 'Recipient confirmation',
+  },
 ];
 const historyRows = [
   {
@@ -135,6 +142,16 @@ export default function Home() {
     blueMessage: 'This transaction usually takes less than 10 minutes',
     blueButton: 'Done',
     blueLink: 'View transaction',
+    indigoMessage:
+      "We’re sending your money now. Kayla Zelle will get it in a few minutes.",
+    indigoAmount: '$50.00',
+    indigoName: 'Kayla Zelle',
+    indigoRegistered: 'Registered as Jeffrey',
+    indigoPhone: '(678) 237-8125',
+    indigoSiri:
+      'Add a Siri shortcut, such as “Pay Kayla,” to save time when sending money.',
+    indigoSiriButton: 'Add to Siri',
+    indigoDone: 'Done',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -159,7 +176,9 @@ export default function Home() {
             ? 1601
             : template.id === 'blue'
               ? 1600
-              : 1200;
+              : template.id === 'indigo'
+                ? 1947
+                : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -399,6 +418,83 @@ export default function Home() {
       x.fillText(form.blueLink || 'View transaction', 450, 1573);
       x.save();
       x.translate(450, 1000);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.82;
+      x.fillStyle = '#ff263a';
+      x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'indigo') {
+      const img = new Image();
+      img.src = '/indigo-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1947);
+      x.textAlign = 'center';
+      x.fillStyle = '#fff';
+      x.fillRect(45, 405, 810, 130);
+      x.fillRect(220, 535, 460, 135);
+      x.fillRect(210, 842, 480, 70);
+      x.fillRect(180, 900, 540, 56);
+      x.fillRect(220, 945, 460, 55);
+      x.fillRect(35, 1015, 830, 140);
+      x.fillRect(390, 1155, 260, 80);
+      x.fillStyle = '#151515';
+      x.font = '34px Arial';
+      const indigoMessage = form.indigoMessage || 'Sample confirmation message';
+      const indigoWords = indigoMessage.split(' ');
+      const indigoLines: string[] = [];
+      let indigoLine = '';
+      for (const word of indigoWords) {
+        const candidate = indigoLine ? `${indigoLine} ${word}` : word;
+        if (x.measureText(candidate).width > 790 && indigoLine) {
+          indigoLines.push(indigoLine);
+          indigoLine = word;
+        } else {
+          indigoLine = candidate;
+        }
+      }
+      if (indigoLine) indigoLines.push(indigoLine);
+      indigoLines.slice(0, 2).forEach((entry, index) =>
+        x.fillText(entry, 450, 462 + index * 45),
+      );
+      x.font = '68px Arial';
+      x.fillText(form.indigoAmount || '$0.00', 450, 625);
+      x.font = '39px Arial';
+      x.fillText(form.indigoName || 'Demo recipient', 450, 895);
+      x.font = '28px Arial';
+      x.fillText(form.indigoRegistered || 'Registered as sample', 450, 941);
+      x.fillText(form.indigoPhone || '(000) 000-0000', 450, 984);
+      x.font = '31px Arial';
+      const siriWords = (form.indigoSiri || 'Sample shortcut message').split(' ');
+      const siriLines: string[] = [];
+      let siriLine = '';
+      for (const word of siriWords) {
+        const candidate = siriLine ? `${siriLine} ${word}` : word;
+        if (x.measureText(candidate).width > 820 && siriLine) {
+          siriLines.push(siriLine);
+          siriLine = word;
+        } else {
+          siriLine = candidate;
+        }
+      }
+      if (siriLine) siriLines.push(siriLine);
+      siriLines.slice(0, 2).forEach((entry, index) =>
+        x.fillText(entry, 450, 1071 + index * 41),
+      );
+      x.font = 'bold 34px Arial';
+      x.fillText(form.indigoSiriButton || 'Add to Siri', 520, 1208);
+      x.fillStyle = '#2f66b8';
+      x.beginPath();
+      x.roundRect(42, 1795, 816, 95, 7);
+      x.fill();
+      x.fillStyle = '#fff';
+      x.font = '36px Arial';
+      x.fillText(form.indigoDone || 'Done', 450, 1856);
+      x.save();
+      x.translate(450, 980);
       x.rotate(-0.28);
       x.globalAlpha = 0.82;
       x.fillStyle = '#ff263a';
@@ -834,7 +930,8 @@ function Gallery({
               t.id === 'mono' ||
               t.id === 'citrus' ||
               t.id === 'orbit' ||
-              t.id === 'blue' ? (
+              t.id === 'blue' ||
+              t.id === 'indigo' ? (
                 <>
                   <img
                     src={
@@ -846,7 +943,9 @@ function Gallery({
                             ? '/citrus-reference.jpg'
                             : t.id === 'orbit'
                               ? '/orbit-reference.jpg'
-                              : '/blue-reference.jpg'
+                              : t.id === 'blue'
+                                ? '/blue-reference.jpg'
+                                : '/indigo-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -996,6 +1095,21 @@ function Editor({
               <div className="row">
                 {field('blueButton', 'Button label')}
                 {field('blueLink', 'Transaction link')}
+              </div>
+            </>
+          ) : template.id === 'indigo' ? (
+            <>
+              {field('indigoMessage', 'Sending message')}
+              {field('indigoAmount', 'Amount')}
+              {field('indigoName', 'Recipient name')}
+              <div className="row">
+                {field('indigoRegistered', 'Registered name')}
+                {field('indigoPhone', 'Phone number')}
+              </div>
+              {field('indigoSiri', 'Siri shortcut message')}
+              <div className="row">
+                {field('indigoSiriButton', 'Siri button')}
+                {field('indigoDone', 'Done button')}
               </div>
             </>
           ) : (
@@ -1164,6 +1278,39 @@ function Editor({
                   {form.blueLink || 'View transaction'}
                 </span>
                 <div className="watermark blue-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'indigo' ? (
+              <>
+                <img
+                  className="indigo-reference"
+                  src="/indigo-reference.jpg"
+                  alt="Indigo confirmation reference"
+                />
+                <span className="indigo-copy indigo-message">
+                  {form.indigoMessage || 'Sample confirmation message'}
+                </span>
+                <span className="indigo-copy indigo-amount">
+                  {form.indigoAmount || '$0.00'}
+                </span>
+                <span className="indigo-copy indigo-name">
+                  {form.indigoName || 'Demo recipient'}
+                </span>
+                <span className="indigo-copy indigo-registered">
+                  {form.indigoRegistered || 'Registered as sample'}
+                </span>
+                <span className="indigo-copy indigo-phone">
+                  {form.indigoPhone || '(000) 000-0000'}
+                </span>
+                <span className="indigo-copy indigo-siri-message">
+                  {form.indigoSiri || 'Sample shortcut message'}
+                </span>
+                <span className="indigo-copy indigo-siri-button">
+                  {form.indigoSiriButton || 'Add to Siri'}
+                </span>
+                <span className="indigo-copy indigo-done">
+                  {form.indigoDone || 'Done'}
+                </span>
+                <div className="watermark indigo-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>
