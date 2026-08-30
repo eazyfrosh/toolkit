@@ -1055,7 +1055,7 @@ function Gallery({
                         : t.id === 'mono'
                           ? '/paypal-library-preview.jpeg'
                           : t.id === 'citrus'
-                            ? '/citrus-reference.jpg'
+                            ? '/trust-wallet-library-preview.png'
                             : t.id === 'orbit'
                               ? '/venmo-library-preview.png'
                               : t.id === 'blue'
