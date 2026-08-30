@@ -60,6 +60,13 @@ const templates: Template[] = [
     accent: '#3186d8',
     description: 'Payment details',
   },
+  {
+    id: 'blue',
+    name: 'Blue',
+    category: 'Transfer',
+    accent: '#3975f6',
+    description: 'Success confirmation',
+  },
 ];
 const historyRows = [
   {
@@ -122,6 +129,12 @@ export default function Home() {
     orbitMethod: 'Venmo balance',
     orbitDate: 'December 10, 2022, 12:46 PM',
     orbitHandle: '@SpaceUnicorn80',
+    blueTitle: 'Successfully sent',
+    blueFiat: '$10,000.26',
+    blueCrypto: '10,000.259635 USDT',
+    blueMessage: 'This transaction usually takes less than 10 minutes',
+    blueButton: 'Done',
+    blueLink: 'View transaction',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -144,7 +157,9 @@ export default function Home() {
           ? 1600
           : template.id === 'orbit'
             ? 1601
-            : 1200;
+            : template.id === 'blue'
+              ? 1600
+              : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -325,6 +340,68 @@ export default function Home() {
       x.globalAlpha = 0.78;
       x.fillStyle = '#ff263a';
       x.textAlign = 'center';
+      x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'blue') {
+      const img = new Image();
+      img.src = '/blue-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1600);
+      x.textAlign = 'center';
+      x.fillStyle = '#07090e';
+      x.fillRect(125, 670, 650, 110);
+      x.fillRect(135, 785, 630, 130);
+      x.fillRect(110, 905, 680, 120);
+      x.fillRect(45, 1080, 810, 150);
+      x.fillStyle = '#f5f5f7';
+      x.font = '48px Arial';
+      x.fillText(form.blueTitle || 'Successfully sent', 450, 739);
+      x.fillStyle = '#466cc6';
+      x.font = 'bold 62px Arial';
+      x.fillText(form.blueFiat || '$0.00', 450, 875);
+      x.fillStyle = '#c6c7ca';
+      x.font = 'bold 43px Arial';
+      x.fillText(form.blueCrypto || '0 USDT', 450, 977);
+      x.fillStyle = '#b7b8bc';
+      x.font = '39px Arial';
+      const message = form.blueMessage || 'Sample transfer message';
+      const words = message.split(' ');
+      const lines: string[] = [];
+      let line = '';
+      for (const word of words) {
+        const candidate = line ? `${line} ${word}` : word;
+        if (x.measureText(candidate).width > 790 && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = candidate;
+        }
+      }
+      if (line) lines.push(line);
+      lines.slice(0, 2).forEach((entry, index) =>
+        x.fillText(entry, 450, 1150 + index * 48),
+      );
+      x.fillStyle = '#3975f6';
+      x.beginPath();
+      x.roundRect(58, 1295, 784, 146, 19);
+      x.fill();
+      x.fillStyle = '#101433';
+      x.font = 'bold 48px Arial';
+      x.fillText(form.blueButton || 'Done', 450, 1387);
+      x.fillStyle = '#07090e';
+      x.fillRect(160, 1505, 580, 95);
+      x.fillStyle = '#f5f5f7';
+      x.font = '49px Arial';
+      x.fillText(form.blueLink || 'View transaction', 450, 1573);
+      x.save();
+      x.translate(450, 1000);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.82;
+      x.fillStyle = '#ff263a';
       x.font = 'bold 82px Arial';
       x.fillText('SAMPLE ONLY', 0, 0);
       x.restore();
@@ -756,7 +833,8 @@ function Gallery({
               {t.id === 'studio' ||
               t.id === 'mono' ||
               t.id === 'citrus' ||
-              t.id === 'orbit' ? (
+              t.id === 'orbit' ||
+              t.id === 'blue' ? (
                 <>
                   <img
                     src={
@@ -766,7 +844,9 @@ function Gallery({
                           ? '/mono-reference.jpg'
                           : t.id === 'citrus'
                             ? '/citrus-reference.jpg'
-                            : '/orbit-reference.jpg'
+                            : t.id === 'orbit'
+                              ? '/orbit-reference.jpg'
+                              : '/blue-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -904,6 +984,19 @@ function Editor({
               {field('orbitMethod', 'Payment method')}
               {field('orbitDate', 'Transaction date')}
               {field('orbitHandle', 'Paid to')}
+            </>
+          ) : template.id === 'blue' ? (
+            <>
+              {field('blueTitle', 'Success message')}
+              <div className="row">
+                {field('blueFiat', 'Fiat amount')}
+                {field('blueCrypto', 'Crypto amount')}
+              </div>
+              {field('blueMessage', 'Timing note')}
+              <div className="row">
+                {field('blueButton', 'Button label')}
+                {field('blueLink', 'Transaction link')}
+              </div>
             </>
           ) : (
             <>
@@ -1044,6 +1137,33 @@ function Editor({
                   {form.orbitHandle || '@SampleUser'}
                 </span>
                 <div className="watermark orbit-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'blue' ? (
+              <>
+                <img
+                  className="blue-reference"
+                  src="/blue-reference.jpg"
+                  alt="Blue transfer reference"
+                />
+                <span className="blue-copy blue-title">
+                  {form.blueTitle || 'Successfully sent'}
+                </span>
+                <span className="blue-copy blue-fiat">
+                  {form.blueFiat || '$0.00'}
+                </span>
+                <span className="blue-copy blue-crypto">
+                  {form.blueCrypto || '0 USDT'}
+                </span>
+                <span className="blue-copy blue-message">
+                  {form.blueMessage || 'Sample transfer message'}
+                </span>
+                <span className="blue-copy blue-button">
+                  {form.blueButton || 'Done'}
+                </span>
+                <span className="blue-copy blue-link">
+                  {form.blueLink || 'View transaction'}
+                </span>
+                <div className="watermark blue-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>
