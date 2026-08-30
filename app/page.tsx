@@ -1057,7 +1057,7 @@ function Gallery({
                           : t.id === 'citrus'
                             ? '/citrus-reference.jpg'
                             : t.id === 'orbit'
-                              ? '/orbit-reference.jpg'
+                              ? '/venmo-library-preview.png'
                               : t.id === 'blue'
                                 ? '/blue-reference.jpg'
                                 : t.id === 'indigo'
