@@ -1063,7 +1063,7 @@ function Gallery({
                                 : t.id === 'indigo'
                                   ? '/zelle-library-preview.png'
                                   : t.id === 'black'
-                                    ? '/black-reference.jpg'
+                                    ? '/bybit-library-preview.jpg'
                                     : '/dark-blue-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
