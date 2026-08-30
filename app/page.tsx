@@ -41,49 +41,49 @@ const templates: Template[] = [
   },
   {
     id: 'mono',
-    name: 'Mono',
+    name: 'Paypal',
     category: 'Minimal',
     accent: '#111827',
     description: 'Classic thermal style',
   },
   {
     id: 'citrus',
-    name: 'Citrus',
+    name: 'Trust Wallet',
     category: 'Crypto',
     accent: '#2584a8',
     description: 'Transfer detail',
   },
   {
     id: 'orbit',
-    name: 'Orbit',
+    name: 'Venmo',
     category: 'Payments',
     accent: '#3186d8',
     description: 'Payment details',
   },
   {
     id: 'blue',
-    name: 'Blue',
+    name: 'CoinBase',
     category: 'Transfer',
     accent: '#3975f6',
     description: 'Success confirmation',
   },
   {
     id: 'indigo',
-    name: 'Indigo',
+    name: 'Zelle',
     category: 'Confirmation',
     accent: '#2f66b8',
     description: 'Recipient confirmation',
   },
   {
     id: 'black',
-    name: 'Black',
+    name: 'Bybit',
     category: 'Crypto',
     accent: '#ff9e2c',
     description: 'Dark payment success',
   },
   {
     id: 'dark-blue',
-    name: 'Dark Blue',
+    name: 'Binance',
     category: 'Crypto',
     accent: '#28bf8b',
     description: 'Deposit confirmation',
@@ -101,7 +101,7 @@ const historyRows = [
   {
     id: 'SMP-1047',
     title: 'Sunday market sample',
-    template: 'Citrus',
+    template: 'Trust Wallet',
     amount: '$42.80',
     date: 'Aug 29, 2026',
     status: 'Draft',
@@ -109,7 +109,7 @@ const historyRows = [
   {
     id: 'SMP-1046',
     title: 'Workspace concept',
-    template: 'Mono',
+    template: 'Paypal',
     amount: '$280.00',
     date: 'Aug 27, 2026',
     status: 'Exported',
@@ -1338,7 +1338,7 @@ function Editor({
                 <img
                   className="mono-reference"
                   src="/mono-reference.jpg"
-                  alt="Mono receipt reference"
+                  alt="Paypal receipt reference"
                 />
                 <div className="mono-message">
                   <span>{form.monoMessage || "You've sent"}</span>
@@ -1359,7 +1359,7 @@ function Editor({
                 <img
                   className="citrus-reference"
                   src="/citrus-reference.jpg"
-                  alt="Citrus transfer reference"
+                  alt="Trust Wallet transfer reference"
                 />
                 <div className="citrus-top-value">
                   <strong>
@@ -1388,7 +1388,7 @@ function Editor({
                 <img
                   className="orbit-reference"
                   src="/orbit-reference.jpg"
-                  alt="Orbit payment reference"
+                  alt="Venmo payment reference"
                 />
                 <span className="orbit-copy orbit-name">
                   {form.orbitName || 'Demo recipient'}
@@ -1426,7 +1426,7 @@ function Editor({
                 <img
                   className="blue-reference"
                   src="/blue-reference.jpg"
-                  alt="Blue transfer reference"
+                  alt="CoinBase transfer reference"
                 />
                 <span className="blue-copy blue-title">
                   {form.blueTitle || 'Successfully sent'}
@@ -1455,7 +1455,7 @@ function Editor({
                 <img
                   className="indigo-reference"
                   src="/indigo-reference.jpg"
-                  alt="Indigo confirmation reference"
+                  alt="Zelle confirmation reference"
                 />
                 <span className="indigo-copy indigo-message">
                   {form.indigoMessage || 'Sample confirmation message'}
@@ -1490,7 +1490,7 @@ function Editor({
                 <img
                   className="black-reference"
                   src="/black-reference.jpg"
-                  alt="Black payment reference"
+                  alt="Bybit payment reference"
                 />
                 <span className="black-copy black-header">
                   {form.blackHeader || 'Payment'}
@@ -1531,7 +1531,7 @@ function Editor({
                 <img
                   className="dark-blue-reference"
                   src="/dark-blue-reference.jpg"
-                  alt="Dark Blue deposit reference"
+                  alt="Binance deposit reference"
                 />
                 <span className="dark-blue-copy dark-blue-amount">
                   {form.darkBlueAmount || '+0 USDT'}
