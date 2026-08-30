@@ -1949,6 +1949,142 @@ button {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
   transform: translate(-50%, -50%) rotate(-18deg);
 }
+.mini-dark-blue {
+  background: #222431;
+  padding: 0;
+}
+.mini-dark-blue:before {
+  display: none;
+}
+.mini-dark-blue > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mini-dark-blue .image-watermark {
+  font-size: 20px !important;
+}
+.receipt.dark-blue {
+  width: min(430px, 100%);
+  min-height: 0;
+  aspect-ratio: 720/1280;
+  padding: 0;
+  border-radius: 0;
+  background: #222431;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.dark-blue-reference {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.dark-blue-copy {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #222431;
+  color: #f4f4f5;
+  text-align: center;
+}
+.dark-blue-amount {
+  top: 4%;
+  left: 18%;
+  right: 18%;
+  height: 6.8%;
+  font-size: clamp(29px, 7.3vw, 40px);
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dark-blue-status {
+  top: 10.25%;
+  left: 28%;
+  right: 28%;
+  height: 4.6%;
+  color: #29bd8b;
+  font-size: clamp(18px, 4.55vw, 25px);
+  font-weight: 750;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dark-blue-message {
+  top: 14.5%;
+  left: 5%;
+  right: 5%;
+  height: 7.7%;
+  color: #8c8e98;
+  font-size: clamp(14px, 3.55vw, 19px);
+  line-height: 1.35;
+  padding: 0 1%;
+}
+.dark-blue-network {
+  top: 28.1%;
+  left: 86.2%;
+  right: 4.3%;
+  height: 3.6%;
+  border-radius: 5px;
+  background: #353527;
+  color: #f0c844;
+  font-size: clamp(13px, 3.25vw, 18px);
+  font-weight: 750;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dark-blue-address,
+.dark-blue-txid,
+.dark-blue-wallet,
+.dark-blue-date {
+  left: 41%;
+  right: 4%;
+  justify-content: flex-end;
+  background: #222431;
+  text-align: right;
+  font-size: clamp(14px, 3.55vw, 19px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.dark-blue-address {
+  top: 33.7%;
+  height: 7.8%;
+}
+.dark-blue-txid {
+  top: 42.7%;
+  height: 7.2%;
+}
+.dark-blue-wallet {
+  top: 51.1%;
+  height: 4.5%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dark-blue-date {
+  top: 56.9%;
+  height: 4.5%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dark-blue-watermark {
+  top: 46%;
+  z-index: 3;
+  color: #ff263a !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(35px, 10.8vw, 58px) !important;
+  font-weight: 950;
+  letter-spacing: 0.035em;
+  opacity: 0.84;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  transform: translate(-50%, -50%) rotate(-18deg);
+}
 @media (max-width: 1000px) {
   .gallery {
     grid-template-columns: repeat(2, 1fr);

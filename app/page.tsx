@@ -81,6 +81,13 @@ const templates: Template[] = [
     accent: '#ff9e2c',
     description: 'Dark payment success',
   },
+  {
+    id: 'dark-blue',
+    name: 'Dark Blue',
+    category: 'Crypto',
+    accent: '#28bf8b',
+    description: 'Deposit confirmation',
+  },
 ];
 const historyRows = [
   {
@@ -173,6 +180,15 @@ export default function Home() {
     blackOrder: 'ORDER_ID_880314',
     blackShare: 'Share and Earn',
     blackDone: 'Done',
+    darkBlueAmount: '+200 USDT',
+    darkBlueStatus: 'Completed',
+    darkBlueMessage:
+      'Crypto has arrived in your Binance account. View your spot account balance for more details.',
+    darkBlueNetwork: 'ETH',
+    darkBlueAddress: '0xcc81efc504d111ed31ca026d0aff9cb3350f0fb6',
+    darkBlueTxid: 'Off-chain transfer 172490923091',
+    darkBlueWallet: 'Funding Wallet',
+    darkBlueDate: '2024-05-10 10:51:01',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -201,7 +217,9 @@ export default function Home() {
                 ? 1947
                 : template.id === 'black'
                   ? 1800
-                  : 1200;
+                  : template.id === 'dark-blue'
+                    ? 1600
+                    : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -579,6 +597,77 @@ export default function Home() {
       x.rotate(-0.28);
       x.globalAlpha = 0.84;
       x.fillStyle = '#ff263a';
+      x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'dark-blue') {
+      const img = new Image();
+      img.src = '/dark-blue-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1600);
+      x.textAlign = 'center';
+      x.fillStyle = '#222431';
+      x.fillRect(165, 50, 570, 95);
+      x.fillRect(265, 145, 370, 75);
+      x.fillRect(45, 225, 810, 120);
+      x.fillStyle = '#f5f5f6';
+      x.font = 'bold 58px Arial';
+      x.fillText(form.darkBlueAmount || '+0 USDT', 450, 126);
+      x.fillStyle = '#29bd8b';
+      x.font = 'bold 37px Arial';
+      x.fillText(`✓ ${form.darkBlueStatus || 'Completed'}`, 450, 207);
+      x.fillStyle = '#8c8e98';
+      x.font = '29px Arial';
+      const darkMessage = form.darkBlueMessage || 'Sample deposit message';
+      const darkWords = darkMessage.split(' ');
+      const darkLines: string[] = [];
+      let darkLine = '';
+      for (const word of darkWords) {
+        const candidate = darkLine ? `${darkLine} ${word}` : word;
+        if (x.measureText(candidate).width > 810 && darkLine) {
+          darkLines.push(darkLine);
+          darkLine = word;
+        } else {
+          darkLine = candidate;
+        }
+      }
+      if (darkLine) darkLines.push(darkLine);
+      darkLines.slice(0, 2).forEach((entry, index) =>
+        x.fillText(entry, 450, 274 + index * 40),
+      );
+      x.fillStyle = '#353527';
+      x.fillRect(775, 449, 82, 55);
+      x.fillStyle = '#f0c844';
+      x.font = 'bold 30px Arial';
+      x.fillText(form.darkBlueNetwork || 'ETH', 816, 487);
+      x.fillStyle = '#222431';
+      x.fillRect(300, 535, 560, 125);
+      x.fillRect(380, 675, 480, 115);
+      x.fillRect(420, 810, 440, 72);
+      x.fillRect(390, 902, 470, 72);
+      x.fillStyle = '#f4f4f5';
+      x.textAlign = 'right';
+      x.font = '32px Arial';
+      const address = form.darkBlueAddress || 'sample-address';
+      const addressSplit = Math.ceil(address.length / 2);
+      x.fillText(address.slice(0, addressSplit), 840, 584);
+      x.fillText(address.slice(addressSplit), 840, 631);
+      const txid = form.darkBlueTxid || 'Sample transaction';
+      const txidWords = txid.split(' ');
+      const txidMid = Math.ceil(txidWords.length / 2);
+      x.fillText(txidWords.slice(0, txidMid).join(' '), 840, 721);
+      x.fillText(txidWords.slice(txidMid).join(' '), 840, 763);
+      x.fillText(form.darkBlueWallet || 'Sample Wallet', 840, 856);
+      x.fillText(form.darkBlueDate || 'Demo date', 840, 949);
+      x.save();
+      x.translate(450, 735);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.84;
+      x.fillStyle = '#ff263a';
+      x.textAlign = 'center';
       x.font = 'bold 82px Arial';
       x.fillText('SAMPLE ONLY', 0, 0);
       x.restore();
@@ -1013,7 +1102,8 @@ function Gallery({
               t.id === 'orbit' ||
               t.id === 'blue' ||
               t.id === 'indigo' ||
-              t.id === 'black' ? (
+              t.id === 'black' ||
+              t.id === 'dark-blue' ? (
                 <>
                   <img
                     src={
@@ -1029,7 +1119,9 @@ function Gallery({
                                 ? '/blue-reference.jpg'
                                 : t.id === 'indigo'
                                   ? '/indigo-reference.jpg'
-                                  : '/black-reference.jpg'
+                                  : t.id === 'black'
+                                    ? '/black-reference.jpg'
+                                    : '/dark-blue-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -1222,6 +1314,21 @@ function Editor({
                 {field('blackShare', 'Share button')}
                 {field('blackDone', 'Done button')}
               </div>
+            </>
+          ) : template.id === 'dark-blue' ? (
+            <>
+              <div className="row">
+                {field('darkBlueAmount', 'Amount')}
+                {field('darkBlueStatus', 'Status')}
+              </div>
+              {field('darkBlueMessage', 'Confirmation message')}
+              <div className="row">
+                {field('darkBlueNetwork', 'Network')}
+                {field('darkBlueWallet', 'Wallet')}
+              </div>
+              {field('darkBlueAddress', 'Address')}
+              {field('darkBlueTxid', 'Transaction ID')}
+              {field('darkBlueDate', 'Date')}
             </>
           ) : (
             <>
@@ -1461,6 +1568,39 @@ function Editor({
                   {form.blackDone || 'Done'}
                 </span>
                 <div className="watermark black-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'dark-blue' ? (
+              <>
+                <img
+                  className="dark-blue-reference"
+                  src="/dark-blue-reference.jpg"
+                  alt="Dark Blue deposit reference"
+                />
+                <span className="dark-blue-copy dark-blue-amount">
+                  {form.darkBlueAmount || '+0 USDT'}
+                </span>
+                <span className="dark-blue-copy dark-blue-status">
+                  ✓ {form.darkBlueStatus || 'Completed'}
+                </span>
+                <span className="dark-blue-copy dark-blue-message">
+                  {form.darkBlueMessage || 'Sample deposit message'}
+                </span>
+                <span className="dark-blue-copy dark-blue-network">
+                  {form.darkBlueNetwork || 'ETH'}
+                </span>
+                <span className="dark-blue-copy dark-blue-address">
+                  {form.darkBlueAddress || 'sample-address'}
+                </span>
+                <span className="dark-blue-copy dark-blue-txid">
+                  {form.darkBlueTxid || 'Sample transaction'}
+                </span>
+                <span className="dark-blue-copy dark-blue-wallet">
+                  {form.darkBlueWallet || 'Sample Wallet'}
+                </span>
+                <span className="dark-blue-copy dark-blue-date">
+                  {form.darkBlueDate || 'Demo date'}
+                </span>
+                <div className="watermark dark-blue-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>
