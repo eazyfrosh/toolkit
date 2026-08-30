@@ -103,6 +103,9 @@ export default function Home() {
     tax: '0.00',
     date: 'Today at 9:17 PM',
     note: 'Thanks for trying ReceiptLab.',
+    monoMessage: "You've sent",
+    monoCurrency: 'USD',
+    monoRecipient: 'lcantrell44@hotmail.com',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -118,7 +121,7 @@ export default function Home() {
     notify(`Preparing ${type.toUpperCase()}…`);
     const c = document.createElement('canvas');
     c.width = 900;
-    c.height = 1200;
+    c.height = template.id === 'mono' ? 1310 : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -166,6 +169,48 @@ export default function Home() {
       x.globalAlpha = 0.76;
       x.fillStyle = '#ff2438';
       x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'mono') {
+      const img = new Image();
+      img.src = '/mono-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1310);
+      x.fillStyle = '#fff';
+      x.fillRect(2, 260, 896, 586);
+      x.strokeStyle = '#e8e8e8';
+      x.lineWidth = 2;
+      x.strokeRect(2, 260, 896, 586);
+      x.textAlign = 'center';
+      x.fillStyle = '#353535';
+      x.font = '58px Arial';
+      x.fillText(form.monoMessage || "You've sent", 450, 468);
+      x.fillText(
+        `$${Number(form.amount || 0).toFixed(2)} ${form.monoCurrency || 'USD'} to`,
+        450,
+        566,
+      );
+      const recipient = form.monoRecipient || 'sample@example.com';
+      x.font = '58px Arial';
+      if (x.measureText(recipient).width <= 790) {
+        x.fillText(recipient, 450, 674);
+      } else {
+        let split = recipient.length;
+        while (split > 1 && x.measureText(recipient.slice(0, split)).width > 790) {
+          split -= 1;
+        }
+        x.fillText(recipient.slice(0, split), 450, 652);
+        x.fillText(recipient.slice(split), 450, 732);
+      }
+      x.save();
+      x.translate(450, 624);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.78;
+      x.fillStyle = '#ff263a';
+      x.font = 'bold 78px Arial';
       x.fillText('SAMPLE ONLY', 0, 0);
       x.restore();
     } else {
@@ -593,11 +638,15 @@ function Gallery({
               className={`mini mini-${t.id}`}
               style={{ '--accent': t.accent } as React.CSSProperties}
             >
-              {t.id === 'studio' ? (
+              {t.id === 'studio' || t.id === 'mono' ? (
                 <>
                   <img
-                    src="/studio-reference.jpg"
-                    alt="Studio receipt reference"
+                    src={
+                      t.id === 'studio'
+                        ? '/studio-reference.jpg'
+                        : '/mono-reference.jpg'
+                    }
+                    alt={`${t.name} receipt reference`}
                   />
                   <span className="image-watermark">SAMPLE ONLY</span>
                 </>
@@ -695,6 +744,15 @@ function Editor({
                 {field('date', 'Date and time')}
               </div>
             </>
+          ) : template.id === 'mono' ? (
+            <>
+              {field('monoMessage', 'Message')}
+              {field('monoRecipient', 'Recipient email')}
+              <div className="row">
+                {field('amount', 'Amount')}
+                {field('monoCurrency', 'Currency')}
+              </div>
+            </>
           ) : (
             <>
               {field('merchant', 'Display name')}
@@ -752,6 +810,25 @@ function Editor({
                   {form.date || 'Demo date'}
                 </div>
                 <div className="watermark image-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'mono' ? (
+              <>
+                <img
+                  className="mono-reference"
+                  src="/mono-reference.jpg"
+                  alt="Mono receipt reference"
+                />
+                <div className="mono-message">
+                  <span>{form.monoMessage || "You've sent"}</span>
+                  <span>
+                    ${Number(form.amount || 0).toFixed(2)}{' '}
+                    {form.monoCurrency || 'USD'} to
+                  </span>
+                  <span className="mono-recipient">
+                    {form.monoRecipient || 'sample@example.com'}
+                  </span>
+                </div>
+                <div className="watermark mono-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>
