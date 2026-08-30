@@ -74,6 +74,13 @@ const templates: Template[] = [
     accent: '#2f66b8',
     description: 'Recipient confirmation',
   },
+  {
+    id: 'black',
+    name: 'Black',
+    category: 'Crypto',
+    accent: '#ff9e2c',
+    description: 'Dark payment success',
+  },
 ];
 const historyRows = [
   {
@@ -152,6 +159,20 @@ export default function Home() {
       'Add a Siri shortcut, such as “Pay Kayla,” to save time when sending money.',
     indigoSiriButton: 'Add to Siri',
     indigoDone: 'Done',
+    blackHeader: 'Payment',
+    blackStatus: 'Payment Successful',
+    blackAmount: '100 USDT',
+    blackPayTo: 'TrXp...z8w3',
+    blackMethod: 'Send',
+    blackFee: '0.5 USDT',
+    blackTransactionFee: '1 USDT',
+    blackPayWith: '1,045.45 USDT',
+    blackMemo: 'Service payment for Q4 project',
+    blackTime: '2024-12-31 10:35:44',
+    blackTxid: '0x...8a...5c...2f',
+    blackOrder: 'ORDER_ID_880314',
+    blackShare: 'Share and Earn',
+    blackDone: 'Done',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -178,7 +199,9 @@ export default function Home() {
               ? 1600
               : template.id === 'indigo'
                 ? 1947
-                : 1200;
+                : template.id === 'black'
+                  ? 1800
+                  : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -497,6 +520,64 @@ export default function Home() {
       x.translate(450, 980);
       x.rotate(-0.28);
       x.globalAlpha = 0.82;
+      x.fillStyle = '#ff263a';
+      x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'black') {
+      const img = new Image();
+      img.src = '/black-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1800);
+      x.textAlign = 'center';
+      x.fillStyle = '#000';
+      x.fillRect(265, 15, 370, 65);
+      x.fillRect(220, 335, 460, 65);
+      x.fillRect(255, 415, 390, 75);
+      x.fillStyle = '#f2f2f2';
+      x.font = 'bold 35px Arial';
+      x.fillText(form.blackHeader || 'Payment', 450, 63);
+      x.fillText(form.blackStatus || 'Payment Successful', 450, 380);
+      x.font = '54px Arial';
+      x.fillText(form.blackAmount || '0 USDT', 450, 474);
+      const blackRows = [
+        form.blackPayTo || 'Sample recipient',
+        form.blackMethod || 'Send',
+        form.blackFee || '0 USDT',
+        form.blackTransactionFee || '0 USDT',
+        form.blackPayWith || '0 USDT',
+        form.blackMemo || 'Sample payment',
+        form.blackTime || 'Demo date',
+        form.blackTxid || '0x...sample',
+        form.blackOrder || 'SAMPLE_ORDER',
+      ];
+      const blackBaselines = [608, 687, 765, 843, 921, 999, 1077, 1155, 1233];
+      x.textAlign = 'right';
+      x.font = '31px Arial';
+      blackRows.forEach((value, index) => {
+        x.fillStyle = '#101010';
+        x.fillRect(325, blackBaselines[index] - 45, 520, 58);
+        x.fillStyle = '#f2f2f2';
+        x.fillText(value, 825, blackBaselines[index]);
+      });
+      x.fillStyle = '#ff9e2c';
+      x.fillRect(335, 1512, 455, 90);
+      x.textAlign = 'center';
+      x.fillStyle = '#151515';
+      x.font = 'bold 37px Arial';
+      x.fillText(form.blackShare || 'Share and Earn', 560, 1572);
+      x.fillStyle = '#000';
+      x.fillRect(255, 1665, 390, 78);
+      x.fillStyle = '#f2f2f2';
+      x.font = 'bold 36px Arial';
+      x.fillText(form.blackDone || 'Done', 450, 1720);
+      x.save();
+      x.translate(450, 930);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.84;
       x.fillStyle = '#ff263a';
       x.font = 'bold 82px Arial';
       x.fillText('SAMPLE ONLY', 0, 0);
@@ -931,7 +1012,8 @@ function Gallery({
               t.id === 'citrus' ||
               t.id === 'orbit' ||
               t.id === 'blue' ||
-              t.id === 'indigo' ? (
+              t.id === 'indigo' ||
+              t.id === 'black' ? (
                 <>
                   <img
                     src={
@@ -945,7 +1027,9 @@ function Gallery({
                               ? '/orbit-reference.jpg'
                               : t.id === 'blue'
                                 ? '/blue-reference.jpg'
-                                : '/indigo-reference.jpg'
+                                : t.id === 'indigo'
+                                  ? '/indigo-reference.jpg'
+                                  : '/black-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -1110,6 +1194,33 @@ function Editor({
               <div className="row">
                 {field('indigoSiriButton', 'Siri button')}
                 {field('indigoDone', 'Done button')}
+              </div>
+            </>
+          ) : template.id === 'black' ? (
+            <>
+              <div className="row">
+                {field('blackHeader', 'Header')}
+                {field('blackStatus', 'Status heading')}
+              </div>
+              {field('blackAmount', 'Amount')}
+              <div className="row">
+                {field('blackPayTo', 'Pay to')}
+                {field('blackMethod', 'Payment method')}
+              </div>
+              <div className="row">
+                {field('blackFee', 'Fee')}
+                {field('blackTransactionFee', 'Transaction fee')}
+              </div>
+              {field('blackPayWith', 'Pay with')}
+              {field('blackMemo', 'Memo')}
+              {field('blackTime', 'Payment time')}
+              <div className="row">
+                {field('blackTxid', 'TXID')}
+                {field('blackOrder', 'Order ID')}
+              </div>
+              <div className="row">
+                {field('blackShare', 'Share button')}
+                {field('blackDone', 'Done button')}
               </div>
             </>
           ) : (
@@ -1311,6 +1422,45 @@ function Editor({
                   {form.indigoDone || 'Done'}
                 </span>
                 <div className="watermark indigo-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'black' ? (
+              <>
+                <img
+                  className="black-reference"
+                  src="/black-reference.jpg"
+                  alt="Black payment reference"
+                />
+                <span className="black-copy black-header">
+                  {form.blackHeader || 'Payment'}
+                </span>
+                <span className="black-copy black-status">
+                  {form.blackStatus || 'Payment Successful'}
+                </span>
+                <span className="black-copy black-amount">
+                  {form.blackAmount || '0 USDT'}
+                </span>
+                {[
+                  ['black-pay-to', form.blackPayTo || 'Sample recipient'],
+                  ['black-method', form.blackMethod || 'Send'],
+                  ['black-fee', form.blackFee || '0 USDT'],
+                  ['black-transaction-fee', form.blackTransactionFee || '0 USDT'],
+                  ['black-pay-with', form.blackPayWith || '0 USDT'],
+                  ['black-memo', form.blackMemo || 'Sample payment'],
+                  ['black-time', form.blackTime || 'Demo date'],
+                  ['black-txid', form.blackTxid || '0x...sample'],
+                  ['black-order', form.blackOrder || 'SAMPLE_ORDER'],
+                ].map(([className, value]) => (
+                  <span className={`black-copy black-value ${className}`} key={className}>
+                    {value}
+                  </span>
+                ))}
+                <span className="black-copy black-share">
+                  {form.blackShare || 'Share and Earn'}
+                </span>
+                <span className="black-copy black-done">
+                  {form.blackDone || 'Done'}
+                </span>
+                <div className="watermark black-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>

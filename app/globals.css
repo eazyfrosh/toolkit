@@ -1809,6 +1809,146 @@ button {
   text-shadow: 0 2px 4px rgba(255, 255, 255, 0.9);
   transform: translate(-50%, -50%) rotate(-18deg);
 }
+.mini-black {
+  background: #000;
+  padding: 0;
+}
+.mini-black:before {
+  display: none;
+}
+.mini-black > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mini-black .image-watermark {
+  font-size: 20px !important;
+}
+.receipt.black {
+  width: min(430px, 100%);
+  min-height: 0;
+  aspect-ratio: 736/1472;
+  padding: 0;
+  border-radius: 0;
+  background: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.black-reference {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.black-copy {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #f2f2f2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.black-header {
+  top: 1%;
+  left: 29%;
+  right: 29%;
+  height: 4%;
+  background: #000;
+  font-size: clamp(16px, 4.1vw, 22px);
+  font-weight: 750;
+}
+.black-status {
+  top: 18.55%;
+  left: 23%;
+  right: 23%;
+  height: 4.3%;
+  background: #000;
+  font-size: clamp(17px, 4.45vw, 24px);
+  font-weight: 750;
+}
+.black-amount {
+  top: 23.1%;
+  left: 27%;
+  right: 27%;
+  height: 5.2%;
+  background: #000;
+  font-size: clamp(27px, 6.8vw, 37px);
+}
+.black-value {
+  left: 38%;
+  right: 6.8%;
+  height: 4%;
+  justify-content: flex-end;
+  background: #101010;
+  text-align: right;
+  font-size: clamp(14px, 3.55vw, 19px);
+}
+.black-pay-to {
+  top: 31.1%;
+}
+.black-method {
+  top: 35.45%;
+}
+.black-fee {
+  top: 39.75%;
+}
+.black-transaction-fee {
+  top: 44.05%;
+}
+.black-pay-with {
+  top: 48.35%;
+}
+.black-memo {
+  top: 52.65%;
+}
+.black-time {
+  top: 56.95%;
+}
+.black-txid {
+  top: 61.25%;
+}
+.black-order {
+  top: 65.55%;
+}
+.black-share {
+  top: 83.75%;
+  left: 36%;
+  right: 8.5%;
+  height: 4.4%;
+  background: #ff9e2c;
+  color: #151515;
+  font-size: clamp(18px, 4.6vw, 25px);
+  font-weight: 800;
+}
+.black-done {
+  top: 92.55%;
+  left: 29%;
+  right: 29%;
+  height: 4.2%;
+  background: #000;
+  font-size: clamp(18px, 4.6vw, 25px);
+  font-weight: 750;
+}
+.black-watermark {
+  top: 51.7%;
+  z-index: 3;
+  color: #ff263a !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(35px, 10.8vw, 58px) !important;
+  font-weight: 950;
+  letter-spacing: 0.035em;
+  opacity: 0.84;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  transform: translate(-50%, -50%) rotate(-18deg);
+}
 @media (max-width: 1000px) {
   .gallery {
     grid-template-columns: repeat(2, 1fr);
