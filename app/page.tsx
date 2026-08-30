@@ -1053,7 +1053,7 @@ function Gallery({
                       t.id === 'studio'
                         ? '/cashapp-library-preview.jpeg'
                         : t.id === 'mono'
-                          ? '/mono-reference.jpg'
+                          ? '/paypal-library-preview.jpeg'
                           : t.id === 'citrus'
                             ? '/citrus-reference.jpg'
                             : t.id === 'orbit'
