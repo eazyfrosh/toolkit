@@ -56,9 +56,9 @@ const templates: Template[] = [
   {
     id: 'orbit',
     name: 'Orbit',
-    category: 'Services',
-    accent: '#0ea5e9',
-    description: 'Modern invoice look',
+    category: 'Payments',
+    accent: '#3186d8',
+    description: 'Payment details',
   },
 ];
 const historyRows = [
@@ -113,6 +113,15 @@ export default function Home() {
     citrusStatus: 'Completed',
     citrusRecipient: 'bc1qplf...7qrp2v',
     citrusFee: '600 BTC ($65020200.00)',
+    orbitName: 'Kristine Freelund',
+    orbitNote: '"🎁🎄🍬 Xmas Brunch"',
+    orbitAmount: '- $50',
+    orbitLikes: '0',
+    orbitComments: '0',
+    orbitStatus: 'Complete',
+    orbitMethod: 'Venmo balance',
+    orbitDate: 'December 10, 2022, 12:46 PM',
+    orbitHandle: '@SpaceUnicorn80',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -128,7 +137,14 @@ export default function Home() {
     notify(`Preparing ${type.toUpperCase()}…`);
     const c = document.createElement('canvas');
     c.width = 900;
-    c.height = template.id === 'mono' ? 1310 : template.id === 'citrus' ? 1600 : 1200;
+    c.height =
+      template.id === 'mono'
+        ? 1310
+        : template.id === 'citrus'
+          ? 1600
+          : template.id === 'orbit'
+            ? 1601
+            : 1200;
     const x = c.getContext('2d');
     if (!x) return;
     if (template.id === 'studio') {
@@ -254,6 +270,57 @@ export default function Home() {
       x.fillText(form.citrusFee || '0 BTC ($0.00)', 830, 838);
       x.save();
       x.translate(450, 640);
+      x.rotate(-0.28);
+      x.globalAlpha = 0.78;
+      x.fillStyle = '#ff263a';
+      x.textAlign = 'center';
+      x.font = 'bold 82px Arial';
+      x.fillText('SAMPLE ONLY', 0, 0);
+      x.restore();
+    } else if (template.id === 'orbit') {
+      const img = new Image();
+      img.src = '/orbit-reference.jpg';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject();
+      });
+      x.drawImage(img, 0, 0, 900, 1601);
+      x.textAlign = 'center';
+      x.fillStyle = '#fff';
+      x.fillRect(185, 354, 530, 62);
+      x.fillRect(170, 438, 560, 56);
+      x.fillRect(300, 512, 300, 70);
+      x.fillStyle = '#272727';
+      x.font = '42px Arial';
+      x.fillText(form.orbitName || 'Demo recipient', 450, 401);
+      x.font = '34px Arial';
+      x.fillText(form.orbitNote || 'Sample payment', 450, 480);
+      x.fillStyle = '#c43c42';
+      x.font = '52px Arial';
+      x.fillText(form.orbitAmount || '- $0', 450, 563);
+      x.fillStyle = '#fff';
+      x.fillRect(82, 696, 47, 48);
+      x.fillRect(202, 696, 47, 48);
+      x.fillStyle = '#8c9095';
+      x.font = '31px Arial';
+      x.fillText(form.orbitLikes || '0', 105, 735);
+      x.fillText(form.orbitComments || '0', 225, 735);
+      x.textAlign = 'left';
+      x.fillStyle = '#fff';
+      x.fillRect(38, 918, 340, 64);
+      x.fillRect(100, 1096, 610, 67);
+      x.fillRect(38, 1270, 565, 68);
+      x.fillRect(38, 1437, 520, 65);
+      x.fillStyle = '#292929';
+      x.font = '39px Arial';
+      x.fillText(form.orbitStatus || 'Complete', 40, 965);
+      x.fillText(form.orbitMethod || 'Sample balance', 105, 1143);
+      x.font = '37px Arial';
+      x.fillText(form.orbitDate || 'Demo date', 40, 1318);
+      x.font = '39px Arial';
+      x.fillText(form.orbitHandle || '@SampleUser', 40, 1484);
+      x.save();
+      x.translate(450, 820);
       x.rotate(-0.28);
       x.globalAlpha = 0.78;
       x.fillStyle = '#ff263a';
@@ -686,7 +753,10 @@ function Gallery({
               className={`mini mini-${t.id}`}
               style={{ '--accent': t.accent } as React.CSSProperties}
             >
-              {t.id === 'studio' || t.id === 'mono' || t.id === 'citrus' ? (
+              {t.id === 'studio' ||
+              t.id === 'mono' ||
+              t.id === 'citrus' ||
+              t.id === 'orbit' ? (
                 <>
                   <img
                     src={
@@ -694,7 +764,9 @@ function Gallery({
                         ? '/studio-reference.jpg'
                         : t.id === 'mono'
                           ? '/mono-reference.jpg'
-                          : '/citrus-reference.jpg'
+                          : t.id === 'citrus'
+                            ? '/citrus-reference.jpg'
+                            : '/orbit-reference.jpg'
                     }
                     alt={`${t.name} receipt reference`}
                   />
@@ -817,6 +889,22 @@ function Editor({
               {field('citrusRecipient', 'Recipient')}
               {field('citrusFee', 'Network fee')}
             </>
+          ) : template.id === 'orbit' ? (
+            <>
+              {field('orbitName', 'Recipient name')}
+              {field('orbitNote', 'Payment note')}
+              <div className="row">
+                {field('orbitAmount', 'Amount')}
+                {field('orbitStatus', 'Status')}
+              </div>
+              <div className="row">
+                {field('orbitLikes', 'Likes')}
+                {field('orbitComments', 'Comments')}
+              </div>
+              {field('orbitMethod', 'Payment method')}
+              {field('orbitDate', 'Transaction date')}
+              {field('orbitHandle', 'Paid to')}
+            </>
           ) : (
             <>
               {field('merchant', 'Display name')}
@@ -920,6 +1008,42 @@ function Editor({
                   {form.citrusFee || '0 BTC ($0.00)'}
                 </span>
                 <div className="watermark citrus-watermark">SAMPLE ONLY</div>
+              </>
+            ) : template.id === 'orbit' ? (
+              <>
+                <img
+                  className="orbit-reference"
+                  src="/orbit-reference.jpg"
+                  alt="Orbit payment reference"
+                />
+                <span className="orbit-copy orbit-name">
+                  {form.orbitName || 'Demo recipient'}
+                </span>
+                <span className="orbit-copy orbit-note">
+                  {form.orbitNote || 'Sample payment'}
+                </span>
+                <span className="orbit-copy orbit-amount">
+                  {form.orbitAmount || '- $0'}
+                </span>
+                <span className="orbit-copy orbit-likes">
+                  {form.orbitLikes || '0'}
+                </span>
+                <span className="orbit-copy orbit-comments">
+                  {form.orbitComments || '0'}
+                </span>
+                <span className="orbit-copy orbit-status">
+                  {form.orbitStatus || 'Complete'}
+                </span>
+                <span className="orbit-copy orbit-method">
+                  {form.orbitMethod || 'Sample balance'}
+                </span>
+                <span className="orbit-copy orbit-date">
+                  {form.orbitDate || 'Demo date'}
+                </span>
+                <span className="orbit-copy orbit-handle">
+                  {form.orbitHandle || '@SampleUser'}
+                </span>
+                <div className="watermark orbit-watermark">SAMPLE ONLY</div>
               </>
             ) : (
               <>
