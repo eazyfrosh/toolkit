@@ -136,12 +136,17 @@ export default function Home() {
       x.clip();
       x.drawImage(img, 0, 0, 900, 1200);
       x.restore();
-      x.save();
+      x.fillStyle = '#00d95f';
       x.beginPath();
-      x.rect(38, 920, 824, 96);
-      x.clip();
-      x.drawImage(img, 0, 0, 900, 1200);
-      x.restore();
+      x.roundRect(48, 928, 804, 78, 39);
+      x.fill();
+      x.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      x.lineWidth = 2;
+      x.stroke();
+      x.fillStyle = '#fff';
+      x.font = 'bold 33px Arial';
+      x.textAlign = 'center';
+      x.fillText('✓  Completed', 450, 978);
       x.textAlign = 'center';
       x.fillStyle = '#fff';
       x.font = 'bold 34px Arial';
@@ -730,11 +735,10 @@ function Editor({
                   src="/studio-reference.jpg"
                   alt="Studio receipt avatar"
                 />
-                <img
-                  className="studio-fragment studio-complete"
-                  src="/studio-reference.jpg"
-                  alt=""
-                />
+                <div className="studio-completed" aria-label="Completed">
+                  <span aria-hidden="true">✓</span>
+                  <strong>Completed</strong>
+                </div>
                 <div className="studio-copy studio-name">
                   {form.merchant || 'Demo name'}
                 </div>

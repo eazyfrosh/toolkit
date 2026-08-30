@@ -1151,8 +1151,37 @@ button {
 .studio-avatar {
   clip-path: circle(8.2% at 50% 7%);
 }
-.studio-complete {
-  clip-path: inset(77.2% 4.7% 14.8% 4.7% round 999px);
+.studio-completed {
+  position: absolute;
+  top: 77.4%;
+  left: 5.4%;
+  right: 5.4%;
+  height: 6.5%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2.5vw, 13px);
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: #00d95f;
+  color: #fff;
+  font-size: clamp(16px, 4.4vw, 21px);
+  line-height: 1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 3px 12px rgba(0, 0, 0, 0.18);
+}
+.studio-completed span {
+  font-size: 1.2em;
+  font-weight: 900;
+  line-height: 1;
+}
+.studio-completed strong {
+  font-weight: 780;
+  line-height: 1;
 }
 .studio-copy {
   position: absolute;
