@@ -368,7 +368,7 @@ export default function Home() {
               : template.id === 'indigo'
                 ? 1947
                 : template.id === 'black'
-                  ? 1800
+                  ? 1759
                   : template.id === 'dark-blue'
                     ? 1600
                     : 1200;
@@ -653,18 +653,18 @@ export default function Home() {
         img.onload = () => resolve();
         img.onerror = () => reject();
       });
-      x.drawImage(img, 0, 0, 900, 1800);
+      x.drawImage(img, 0, 0, 900, 1759);
       x.textAlign = 'center';
       x.fillStyle = '#000';
-      x.fillRect(265, 15, 370, 65);
-      x.fillRect(220, 335, 460, 65);
-      x.fillRect(255, 415, 390, 75);
+      x.fillRect(265, 15, 370, 64);
+      x.fillRect(220, 327, 460, 64);
+      x.fillRect(255, 405, 390, 73);
       x.fillStyle = '#f2f2f2';
       x.font = 'bold 35px Arial';
-      x.fillText(form.blackHeader || 'Payment', 450, 63);
-      x.fillText(form.blackStatus || 'Payment Successful', 450, 380);
+      x.fillText(form.blackHeader || 'Payment', 450, 62);
+      x.fillText(form.blackStatus || 'Payment Successful', 450, 371);
       x.font = '54px Arial';
-      x.fillText(form.blackAmount || '0 USDT', 450, 474);
+      x.fillText(form.blackAmount || '0 USDT', 450, 463);
       const blackRows = [
         form.blackPayTo || 'Sample recipient',
         form.blackMethod || 'Send',
@@ -676,7 +676,7 @@ export default function Home() {
         form.blackTxid || '0x...sample',
         form.blackOrder || 'SAMPLE_ORDER',
       ];
-      const blackBaselines = [608, 687, 765, 843, 921, 999, 1077, 1155, 1233];
+      const blackBaselines = [594, 671, 747, 824, 900, 976, 1052, 1128, 1205];
       x.textAlign = 'right';
       x.font = '31px Arial';
       blackRows.forEach((value, index) => {
@@ -686,16 +686,16 @@ export default function Home() {
         x.fillText(value, 825, blackBaselines[index]);
       });
       x.fillStyle = '#ff9e2c';
-      x.fillRect(335, 1512, 455, 90);
+      x.fillRect(243, 1477, 513, 88);
       x.textAlign = 'center';
       x.fillStyle = '#151515';
       x.font = 'bold 37px Arial';
-      x.fillText(form.blackShare || 'Share and Earn', 560, 1572);
+      x.fillText(form.blackShare || 'Share and Earn', 500, 1536);
       x.fillStyle = '#000';
-      x.fillRect(255, 1665, 390, 78);
+      x.fillRect(255, 1626, 390, 76);
       x.fillStyle = '#f2f2f2';
       x.font = 'bold 36px Arial';
-      x.fillText(form.blackDone || 'Done', 450, 1720);
+      x.fillText(form.blackDone || 'Done', 450, 1680);
     } else if (template.id === 'dark-blue') {
       const img = new Image();
       img.src = '/dark-blue-reference.jpg';

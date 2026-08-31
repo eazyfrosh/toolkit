@@ -2016,12 +2016,14 @@ button {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding-inline: 1.5%;
   color: #f2f2f2;
   white-space: nowrap;
   text-overflow: ellipsis;
+  line-height: 1.1;
 }
 .black-header {
-  top: 1%;
+  top: 1.45%;
   left: 29%;
   right: 29%;
   height: 4%;
@@ -2030,7 +2032,7 @@ button {
   font-weight: 750;
 }
 .black-status {
-  top: 18.55%;
+  top: 19.25%;
   left: 23%;
   right: 23%;
   height: 4.3%;
@@ -2039,7 +2041,7 @@ button {
   font-weight: 750;
 }
 .black-amount {
-  top: 23.1%;
+  top: 23.85%;
   left: 27%;
   right: 27%;
   height: 5.2%;
@@ -2047,45 +2049,52 @@ button {
   font-size: clamp(22px, 6.8cqw, 37px);
 }
 .black-value {
-  left: 38%;
-  right: 6.8%;
-  height: 4%;
+  left: 35%;
+  right: 4.5%;
+  height: 4.15%;
   justify-content: flex-end;
+  padding-left: 4%;
   background: #101010;
   text-align: right;
   font-size: clamp(11px, 3.55cqw, 19px);
 }
 .black-pay-to {
-  top: 31.1%;
+  top: 31.85%;
 }
 .black-method {
-  top: 35.45%;
+  top: 36.25%;
 }
 .black-fee {
-  top: 39.75%;
+  top: 40.65%;
 }
 .black-transaction-fee {
-  top: 44.05%;
+  top: 45.05%;
 }
 .black-pay-with {
-  top: 48.35%;
+  top: 49.45%;
 }
 .black-memo {
-  top: 52.65%;
+  top: 53.85%;
 }
 .black-time {
-  top: 56.95%;
+  top: 58.25%;
 }
 .black-txid {
-  top: 61.25%;
+  top: 62.65%;
 }
 .black-order {
-  top: 65.55%;
+  top: 67.05%;
+}
+.black-memo,
+.black-time,
+.black-txid,
+.black-order {
+  font-size: clamp(10px, 3.2cqw, 17px);
 }
 .black-share {
-  top: 83.75%;
-  left: 36%;
-  right: 8.5%;
+  top: 84.7%;
+  left: 27%;
+  right: 16%;
   height: 4.4%;
   background: #ff9e2c;
   color: #151515;
@@ -2093,7 +2102,7 @@ button {
   font-weight: 800;
 }
 .black-done {
-  top: 92.55%;
+  top: 94.6%;
   left: 29%;
   right: 29%;
   height: 4.2%;
