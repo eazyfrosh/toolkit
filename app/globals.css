@@ -1248,23 +1248,6 @@ button {
   font-size: 16px;
   line-height: 1.4;
 }
-.image-watermark {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  transform: translate(-50%, -50%) rotate(-18deg);
-  z-index: 3;
-  color: #ff263a !important;
-  font-size: 42px !important;
-  font-weight: 950;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  opacity: 0.78;
-  text-shadow: 0 2px 5px #000;
-}
-.mini-studio .image-watermark {
-  font-size: 20px !important;
-}
 .mini-mono {
   background: #f4f6fa;
   padding: 0;
@@ -1277,9 +1260,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-mono .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.mono {
   width: min(430px, 100%);
@@ -1353,9 +1333,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-citrus .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.citrus {
   width: min(430px, 100%);
@@ -1465,9 +1442,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-orbit .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.orbit {
   width: min(430px, 100%);
@@ -1593,9 +1567,6 @@ button {
   object-fit: cover;
   display: block;
 }
-.mini-blue .image-watermark {
-  font-size: 20px !important;
-}
 .receipt.blue {
   width: min(430px, 100%);
   min-height: 0;
@@ -1714,9 +1685,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-indigo .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.indigo {
   width: min(430px, 100%);
@@ -1850,9 +1818,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-black .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.black {
   width: min(430px, 100%);
@@ -1990,9 +1955,6 @@ button {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-.mini-dark-blue .image-watermark {
-  font-size: 20px !important;
 }
 .receipt.dark-blue {
   width: min(430px, 100%);
