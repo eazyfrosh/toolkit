@@ -129,6 +129,7 @@ export default function Home() {
     [template, setTemplate] = useState(templates[0]),
     [query, setQuery] = useState(''),
     [toast, setToast] = useState(''),
+    [watermarkEnabled, setWatermarkEnabled] = useState(true),
     [historyRows, setHistoryRows] = useState<HistoryRow[]>([]);
   const [form, setForm] = useState({
     merchant: 'Wright',
@@ -342,6 +343,7 @@ export default function Home() {
         amount: receiptAmount(template.id, form, total),
         status,
         form,
+        watermarkEnabled,
         safetyNotice: 'DEMO • NOT A REAL TRANSACTION',
         createdAt: serverTimestamp(),
       });
@@ -370,7 +372,7 @@ export default function Home() {
                   : template.id === 'dark-blue'
                     ? 1600
                     : 1200;
-    const safetyFooterHeight = 52;
+    const safetyFooterHeight = watermarkEnabled ? 52 : 0;
     c.height = contentHeight + safetyFooterHeight;
     const x = c.getContext('2d');
     if (!x) return;
@@ -782,22 +784,24 @@ export default function Home() {
       x.textAlign = 'right';
       x.fillText(`$${total}`, 825, 520);
     }
-    x.save();
-    x.globalAlpha = 1;
-    x.fillStyle = '#fff3cd';
-    x.fillRect(0, contentHeight, 900, safetyFooterHeight);
-    x.fillStyle = '#d69e00';
-    x.fillRect(0, contentHeight, 900, 2);
-    x.textAlign = 'center';
-    x.textBaseline = 'middle';
-    x.fillStyle = '#9f1239';
-    x.font = 'bold 21px Arial';
-    x.fillText(
-      'DEMO • NOT A REAL TRANSACTION',
-      450,
-      contentHeight + safetyFooterHeight / 2 + 1,
-    );
-    x.restore();
+    if (watermarkEnabled) {
+      x.save();
+      x.globalAlpha = 1;
+      x.fillStyle = '#fff3cd';
+      x.fillRect(0, contentHeight, 900, safetyFooterHeight);
+      x.fillStyle = '#d69e00';
+      x.fillRect(0, contentHeight, 900, 2);
+      x.textAlign = 'center';
+      x.textBaseline = 'middle';
+      x.fillStyle = '#9f1239';
+      x.font = 'bold 21px Arial';
+      x.fillText(
+        'DEMO • NOT A REAL TRANSACTION',
+        450,
+        contentHeight + safetyFooterHeight / 2 + 1,
+      );
+      x.restore();
+    }
     const url = c.toDataURL();
     if (type === 'png') {
       const a = document.createElement('a');
@@ -874,7 +878,7 @@ export default function Home() {
           <div className="safe">
             <ShieldCheck />
             <b>Demo-safe by design</b>
-            <p>Every preview and export includes a permanent sample notice.</p>
+            <p>Use the editor toggle to show or hide the sample watermark.</p>
           </div>
           <div className="profile">
             <i>{userInitials(displayName)}</i>
@@ -933,6 +937,8 @@ export default function Home() {
               template={template}
               setTemplate={setTemplate}
               total={total}
+              watermarkEnabled={watermarkEnabled}
+              setWatermarkEnabled={setWatermarkEnabled}
               receiptRef={ref}
               exp={exportFile}
               save={() => saveReceipt('Draft')}
@@ -1346,6 +1352,8 @@ function Editor({
   template,
   setTemplate,
   total,
+  watermarkEnabled,
+  setWatermarkEnabled,
   receiptRef,
   exp,
   save,
@@ -1381,10 +1389,23 @@ function Editor({
           <div className="notice">
             <ShieldCheck />
             <span>
-              <b>Safety notice is locked</b>
-              <p>The demo warning cannot be removed.</p>
+              <b>Safety watermark</b>
+              <p>Keep the sample notice on for safer sharing.</p>
             </span>
           </div>
+          <label className="watermark-toggle">
+            <span>
+              <b>Show watermark</b>
+              <small>Include the demo notice in previews and exports.</small>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              checked={watermarkEnabled}
+              onChange={(e) => setWatermarkEnabled(e.target.checked)}
+              aria-label="Show watermark"
+            />
+          </label>
           <label>
             Template
             <select
@@ -1548,7 +1569,7 @@ function Editor({
           </div>
           <div
             ref={receiptRef}
-            className={`receipt ${template.id} with-safety-footer`}
+            className={`receipt ${template.id} ${watermarkEnabled ? 'with-safety-footer' : ''}`}
             style={{ '--accent': template.accent } as React.CSSProperties}
           >
             {template.id === 'studio' ? (
@@ -1574,9 +1595,11 @@ function Editor({
                 <div className="studio-copy studio-date">
                   {form.date || 'Demo date'}
                 </div>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'mono' ? (
               <>
@@ -1595,9 +1618,11 @@ function Editor({
                     {form.monoRecipient || 'sample@example.com'}
                   </span>
                 </div>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'citrus' ? (
               <>
@@ -1624,9 +1649,11 @@ function Editor({
                 <span className="citrus-value citrus-fee">
                   {form.citrusFee || '0 BTC ($0.00)'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'orbit' ? (
               <>
@@ -1662,9 +1689,11 @@ function Editor({
                 <span className="orbit-copy orbit-handle">
                   {form.orbitHandle || '@SampleUser'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'blue' ? (
               <>
@@ -1691,9 +1720,11 @@ function Editor({
                 <span className="blue-copy blue-link">
                   {form.blueLink || 'View transaction'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'indigo' ? (
               <>
@@ -1726,9 +1757,11 @@ function Editor({
                 <span className="indigo-copy indigo-done">
                   {form.indigoDone || 'Done'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'black' ? (
               <>
@@ -1767,9 +1800,11 @@ function Editor({
                 <span className="black-copy black-done">
                   {form.blackDone || 'Done'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : template.id === 'dark-blue' ? (
               <>
@@ -1802,9 +1837,11 @@ function Editor({
                 <span className="dark-blue-copy dark-blue-date">
                   {form.darkBlueDate || 'Demo date'}
                 </span>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -1846,9 +1883,11 @@ function Editor({
                   <br />
                   It does not represent a purchase, payment, or transaction.
                 </footer>
-                <div className="watermark safety-footer">
-                  DEMO • NOT A REAL TRANSACTION
-                </div>
+                {watermarkEnabled && (
+                  <div className="watermark safety-footer">
+                    DEMO • NOT A REAL TRANSACTION
+                  </div>
+                )}
               </>
             )}
           </div>

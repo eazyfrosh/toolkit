@@ -596,6 +596,64 @@ button {
   font-size: 8px;
   margin: 3px 0 0;
 }
+.watermark-toggle {
+  display: flex !important;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px !important;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--sub);
+  color: var(--text) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  cursor: pointer;
+}
+.watermark-toggle span {
+  display: grid;
+  gap: 4px;
+}
+.watermark-toggle b {
+  font-size: 10px;
+}
+.watermark-toggle small {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 400;
+}
+.watermark-toggle input {
+  appearance: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  padding: 2px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #c9cad4 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+.watermark-toggle input::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s ease;
+}
+.watermark-toggle input:checked {
+  background: var(--purple) !important;
+}
+.watermark-toggle input:checked::before {
+  transform: translateX(14px);
+}
+.watermark-toggle input:focus-visible {
+  outline: 3px solid #665cf633;
+  outline-offset: 2px;
+}
 .form label,
 .auth form > label {
   display: grid;
