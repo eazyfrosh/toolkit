@@ -1,9 +1,28 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  type User,
+} from 'firebase/auth';
+import {
+  addDoc,
+  collection,
+  doc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query as firestoreQuery,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
 import {
   Archive,
   ChevronDown,
-  CircleCheck,
   CreditCard,
   Download,
   FileImage,
@@ -23,6 +42,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { auth, db, firebaseConfigured } from '@/lib/firebase';
 type View = 'dashboard' | 'templates' | 'editor' | 'history' | 'admin';
 type Template = {
   id: string;
@@ -30,6 +50,14 @@ type Template = {
   category: string;
   accent: string;
   description: string;
+};
+type HistoryRow = {
+  id: string;
+  title: string;
+  template: string;
+  amount: string;
+  date: string;
+  status: 'Draft' | 'Exported';
 };
 const templates: Template[] = [
   {
@@ -89,41 +117,19 @@ const templates: Template[] = [
     description: 'Deposit confirmation',
   },
 ];
-const historyRows = [
-  {
-    id: 'SMP-1048',
-    title: 'Northstar demo',
-    template: 'CashApp',
-    amount: '$148.20',
-    date: 'Aug 30, 2026',
-    status: 'Exported',
-  },
-  {
-    id: 'SMP-1047',
-    title: 'Sunday market sample',
-    template: 'Trust Wallet',
-    amount: '$42.80',
-    date: 'Aug 29, 2026',
-    status: 'Draft',
-  },
-  {
-    id: 'SMP-1046',
-    title: 'Workspace concept',
-    template: 'Paypal',
-    amount: '$280.00',
-    date: 'Aug 27, 2026',
-    status: 'Exported',
-  },
-];
 export default function Home() {
-  const [signedIn, setSignedIn] = useState(false),
+  const [user, setUser] = useState<User | null>(null),
+    [authReady, setAuthReady] = useState(!firebaseConfigured),
+    [authBusy, setAuthBusy] = useState(false),
+    [authError, setAuthError] = useState(''),
     [register, setRegister] = useState(false),
     [view, setView] = useState<View>('dashboard'),
     [dark, setDark] = useState(false),
     [mobile, setMobile] = useState(false),
     [template, setTemplate] = useState(templates[0]),
     [query, setQuery] = useState(''),
-    [toast, setToast] = useState('');
+    [toast, setToast] = useState(''),
+    [historyRows, setHistoryRows] = useState<HistoryRow[]>([]);
   const [form, setForm] = useState({
     merchant: 'Wright',
     item: '$Payday1080',
@@ -192,6 +198,8 @@ export default function Home() {
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Creator';
+
   function go(v: View) {
     setView(v);
     setMobile(false);
@@ -199,6 +207,148 @@ export default function Home() {
   function notify(s: string) {
     setToast(s);
     setTimeout(() => setToast(''), 2400);
+  }
+
+  useEffect(() => {
+    if (!firebaseConfigured || !auth) {
+      return;
+    }
+
+    return onAuthStateChanged(
+      auth,
+      (nextUser) => {
+        setUser(nextUser);
+        setAuthReady(true);
+      },
+      (error) => {
+        setAuthError(firebaseErrorMessage(error));
+        setAuthReady(true);
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!user || !firebaseConfigured || !db) {
+      return;
+    }
+
+    const receiptsQuery = firestoreQuery(
+      collection(db, 'users', user.uid, 'receipts'),
+      orderBy('createdAt', 'desc'),
+      limit(50),
+    );
+
+    return onSnapshot(
+      receiptsQuery,
+      (snapshot) => {
+        setHistoryRows(
+          snapshot.docs.map((receipt) => {
+            const data = receipt.data();
+            const createdAt = data.createdAt?.toDate?.();
+            return {
+              id: receipt.id,
+              title: data.title || 'Untitled demo receipt',
+              template: data.template || 'ReceiptLab',
+              amount: data.amount || '—',
+              date: createdAt
+                ? new Intl.DateTimeFormat('en', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }).format(createdAt)
+                : 'Just now',
+              status: data.status === 'Exported' ? 'Exported' : 'Draft',
+            };
+          }),
+        );
+      },
+      (error) => notify(firebaseErrorMessage(error)),
+    );
+  }, [user]);
+
+  async function submitAuth(details: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
+    if (!firebaseConfigured || !auth || !db) {
+      setAuthError(
+        'Firebase is not configured yet. Add the NEXT_PUBLIC_FIREBASE_* variables in Vercel.',
+      );
+      return;
+    }
+
+    setAuthBusy(true);
+    setAuthError('');
+    try {
+      if (register) {
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          details.email,
+          details.password,
+        );
+        await updateProfile(credential.user, { displayName: details.name });
+        await setDoc(doc(db, 'users', credential.user.uid), {
+          displayName: details.name,
+          email: details.email,
+          role: 'user',
+          createdAt: serverTimestamp(),
+        });
+        await credential.user.reload();
+        setUser(auth.currentUser);
+      } else {
+        await signInWithEmailAndPassword(
+          auth,
+          details.email,
+          details.password,
+        );
+      }
+    } catch (error) {
+      setAuthError(firebaseErrorMessage(error));
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+  async function resetPassword(email: string) {
+    if (!firebaseConfigured || !auth) {
+      setAuthError('Firebase is not configured yet.');
+      return;
+    }
+    if (!email) {
+      setAuthError('Enter your email address first.');
+      return;
+    }
+    setAuthBusy(true);
+    setAuthError('');
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setAuthError('Password reset email sent.');
+    } catch (error) {
+      setAuthError(firebaseErrorMessage(error));
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+  async function saveReceipt(status: 'Draft' | 'Exported', quiet = false) {
+    if (!user || !firebaseConfigured || !db) {
+      if (!quiet) notify('Sign in with Firebase to save receipts');
+      return;
+    }
+    try {
+      await addDoc(collection(db, 'users', user.uid, 'receipts'), {
+        title: `${template.name} demo receipt`,
+        templateId: template.id,
+        template: template.name,
+        amount: receiptAmount(template.id, form, total),
+        status,
+        form,
+        safetyNotice: 'DEMO • NOT A REAL TRANSACTION',
+        createdAt: serverTimestamp(),
+      });
+      if (!quiet) notify('Demo receipt saved to Firebase');
+    } catch (error) {
+      notify(firebaseErrorMessage(error));
+    }
   }
   async function exportFile(type: 'png' | 'pdf') {
     notify(`Preparing ${type.toUpperCase()}…`);
@@ -660,16 +810,31 @@ export default function Home() {
         `<title>ReceiptLab sample</title><img src="${url}" style="max-width:100%"><script>print()<\/script>`,
       );
     }
+    await saveReceipt('Exported', true);
     notify(`${type.toUpperCase()} sample ready`);
   }
-  if (!signedIn)
+  if (!authReady)
+    return (
+      <div className="app-loading">
+        <ReceiptText />
+        <span>Connecting securely…</span>
+      </div>
+    );
+  if (!user)
     return (
       <Auth
         register={register}
         dark={dark}
         theme={() => setDark(!dark)}
-        mode={() => setRegister(!register)}
-        submit={() => setSignedIn(true)}
+        mode={() => {
+          setRegister(!register);
+          setAuthError('');
+        }}
+        submit={submitAuth}
+        reset={resetPassword}
+        busy={authBusy}
+        error={authError}
+        configured={firebaseConfigured}
       />
     );
   const nav = [
@@ -712,12 +877,18 @@ export default function Home() {
             <p>Every preview and export includes a permanent sample notice.</p>
           </div>
           <div className="profile">
-            <i>AD</i>
+            <i>{userInitials(displayName)}</i>
             <span>
-              <b>Alex Demo</b>
-              <small>Creator plan</small>
+              <b>{displayName}</b>
+              <small>{user.email}</small>
             </span>
-            <LogOut onClick={() => setSignedIn(false)} />
+            <button
+              className="logout"
+              aria-label="Sign out"
+              onClick={() => auth && signOut(auth)}
+            >
+              <LogOut />
+            </button>
           </div>
         </aside>
         <main>
@@ -743,7 +914,9 @@ export default function Home() {
               </button>
             </div>
           </header>
-          {view === 'dashboard' && <Dashboard go={go} />}{' '}
+          {view === 'dashboard' && (
+            <Dashboard go={go} rows={historyRows} name={displayName} />
+          )}{' '}
           {view === 'templates' && (
             <Gallery
               selected={template}
@@ -762,7 +935,7 @@ export default function Home() {
               total={total}
               receiptRef={ref}
               exp={exportFile}
-              save={() => notify('Demo receipt saved')}
+              save={() => saveReceipt('Draft')}
             />
           )}{' '}
           {view === 'history' && (
@@ -780,7 +953,11 @@ export default function Home() {
           {view === 'admin' && <Admin notify={notify} />}
         </main>
         {mobile && (
-          <button className="scrim" onClick={() => setMobile(false)} />
+          <button
+            className="scrim"
+            aria-label="Close navigation"
+            onClick={() => setMobile(false)}
+          />
         )}{' '}
         {toast && (
           <div className="toast">
@@ -798,13 +975,28 @@ function Auth({
   theme,
   mode,
   submit,
+  reset,
+  busy,
+  error,
+  configured,
 }: {
   register: boolean;
   dark: boolean;
   theme: () => void;
   mode: () => void;
-  submit: () => void;
+  submit: (details: {
+    name: string;
+    email: string;
+    password: string;
+  }) => Promise<void>;
+  reset: (email: string) => Promise<void>;
+  busy: boolean;
+  error: string;
+  configured: boolean;
 }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   return (
     <div className={dark ? 'dark' : ''}>
       <div className="auth">
@@ -836,13 +1028,13 @@ function Auth({
           </div>
         </section>
         <section className="auth-panel">
-          <button className="theme" onClick={theme}>
+          <button className="theme" aria-label="Toggle color theme" onClick={theme}>
             {dark ? <Sun /> : <Moon />}
           </button>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              submit();
+              void submit({ name, email, password });
             }}
           >
             <i>
@@ -859,12 +1051,25 @@ function Auth({
             {register && (
               <label>
                 Full name
-                <input required placeholder="Alex Morgan" />
+                <input
+                  required
+                  autoComplete="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Alex Morgan"
+                />
               </label>
             )}
             <label>
               Email address
-              <input type="email" required placeholder="alex@example.com" />
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="alex@example.com"
+              />
             </label>
             <label>
               Password
@@ -872,6 +1077,9 @@ function Auth({
                 type="password"
                 minLength={6}
                 required
+                autoComplete={register ? 'new-password' : 'current-password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 placeholder="At least 6 characters"
               />
             </label>
@@ -879,10 +1087,31 @@ function Auth({
               <label>
                 <input type="checkbox" /> Remember me
               </label>
-              <button type="button">Forgot password?</button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => reset(email)}
+              >
+                Forgot password?
+              </button>
             </div>
-            <button className="primary submit">
-              {register ? 'Create demo account' : 'Sign in to dashboard'}
+            {!configured && (
+              <output className="auth-message warning">
+                Firebase environment variables are required before sign-in can
+                work.
+              </output>
+            )}
+            {error && (
+              <p className="auth-message" role="alert" aria-live="polite">
+                {error}
+              </p>
+            )}
+            <button className="primary submit" disabled={busy || !configured}>
+              {busy
+                ? 'Please wait…'
+                : register
+                  ? 'Create account'
+                  : 'Sign in to dashboard'}
             </button>
             <aside>
               <ShieldCheck />
@@ -895,13 +1124,21 @@ function Auth({
     </div>
   );
 }
-function Dashboard({ go }: { go: (v: View) => void }) {
+function Dashboard({
+  go,
+  rows,
+  name,
+}: {
+  go: (v: View) => void;
+  rows: HistoryRow[];
+  name: string;
+}) {
   return (
     <div className="content">
       <section className="welcome">
         <div>
           <span className="eyebrow">SATURDAY, AUGUST 30</span>
-          <h1>Good morning, Alex.</h1>
+          <h1>Good morning, {name.split(' ')[0]}.</h1>
           <p>
             Your demo studio is ready. Create something unmistakably fictional.
           </p>
@@ -915,19 +1152,19 @@ function Dashboard({ go }: { go: (v: View) => void }) {
         <Stat
           icon={<ReceiptText />}
           label="Demo receipts"
-          value="24"
-          detail="+12% this month"
+          value={String(rows.length)}
+          detail="Saved in Firebase"
         />
         <Stat
           icon={<Download />}
           label="Exports"
-          value="18"
+          value={String(rows.filter((row) => row.status === 'Exported').length)}
           detail="PNG & PDF"
         />
         <Stat
           icon={<Sparkles />}
           label="Templates"
-          value="4"
+          value={String(templates.length)}
           detail="All available"
         />
       </div>
@@ -958,7 +1195,15 @@ function Dashboard({ go }: { go: (v: View) => void }) {
           title="Recent samples"
           text="Your latest fictional receipt concepts."
         />
-        <Table rows={historyRows.slice(0, 2)} />
+        {rows.length ? (
+          <Table rows={rows.slice(0, 2)} />
+        ) : (
+          <div className="empty compact">
+            <ReceiptText />
+            <h3>No saved receipts yet</h3>
+            <p>Create or export a demo receipt to add it here.</p>
+          </div>
+        )}
       </section>
     </div>
   );
@@ -1646,7 +1891,7 @@ function HistoryPage({ query, setQuery, rows, edit }: any) {
     </div>
   );
 }
-function Table({ rows, edit }: { rows: any[]; edit?: () => void }) {
+function Table({ rows, edit }: { rows: HistoryRow[]; edit?: () => void }) {
   return (
     <div className="table">
       <table>
@@ -1771,4 +2016,70 @@ function PageTitle({
       <p>{text}</p>
     </section>
   );
+}
+
+function receiptAmount(
+  templateId: string,
+  form: Record<string, string>,
+  total: string,
+): string {
+  switch (templateId) {
+    case 'mono':
+      return `$${form.amount} ${form.monoCurrency}`;
+    case 'citrus':
+      return `${form.citrusAmount} ${form.citrusAsset}`;
+    case 'orbit':
+      return form.orbitAmount;
+    case 'blue':
+      return form.blueFiat;
+    case 'indigo':
+      return form.indigoAmount;
+    case 'black':
+      return form.blackAmount;
+    case 'dark-blue':
+      return form.darkBlueAmount;
+    default:
+      return `$${total}`;
+  }
+}
+
+function userInitials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+}
+
+function firebaseErrorMessage(error: unknown): string {
+  const code =
+    typeof error === 'object' && error && 'code' in error
+      ? String(error.code)
+      : '';
+
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'An account already exists for this email address.';
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+      return 'The email address or password is incorrect.';
+    case 'auth/weak-password':
+      return 'Use a stronger password with at least six characters.';
+    case 'auth/invalid-email':
+      return 'Enter a valid email address.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please wait and try again.';
+    case 'permission-denied':
+    case 'firestore/permission-denied':
+      return 'Firebase blocked this request. Check the Firestore security rules.';
+    case 'unavailable':
+    case 'firestore/unavailable':
+      return 'Firebase is temporarily unavailable. Please try again.';
+    default:
+      return error instanceof Error
+        ? error.message
+        : 'Something went wrong while connecting to Firebase.';
+  }
 }
