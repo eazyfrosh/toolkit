@@ -1319,7 +1319,6 @@ function Gallery({
                     }
                     alt={`${t.name} receipt reference`}
                   />
-                  <span className="image-watermark">DEMO</span>
                 </>
               ) : (
                 <>
