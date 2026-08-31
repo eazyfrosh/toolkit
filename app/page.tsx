@@ -1047,29 +1047,26 @@ function Gallery({
               t.id === 'indigo' ||
               t.id === 'black' ||
               t.id === 'dark-blue' ? (
-                <>
-                  <img
-                    src={
-                      t.id === 'studio'
-                        ? '/cashapp-library-preview.jpeg'
-                        : t.id === 'mono'
-                          ? '/paypal-library-preview.jpeg'
-                          : t.id === 'citrus'
-                            ? '/trust-wallet-library-preview.png'
-                            : t.id === 'orbit'
-                              ? '/venmo-library-preview.png'
-                              : t.id === 'blue'
-                                ? '/coinbase-library-preview.jpeg'
-                                : t.id === 'indigo'
-                                  ? '/zelle-library-preview.png'
-                                  : t.id === 'black'
-                                    ? '/bybit-library-preview.jpg'
-                                    : '/dark-blue-reference.jpg'
-                    }
-                    alt={`${t.name} receipt reference`}
-                  />
-                  <span className="image-watermark">DEMO</span>
-                </>
+                <img
+                  src={
+                    t.id === 'studio'
+                      ? '/cashapp-library-preview.jpeg'
+                      : t.id === 'mono'
+                        ? '/paypal-library-preview.jpeg'
+                        : t.id === 'citrus'
+                          ? '/trust-wallet-library-preview.png'
+                          : t.id === 'orbit'
+                            ? '/venmo-library-preview.png'
+                            : t.id === 'blue'
+                              ? '/coinbase-library-preview.jpeg'
+                              : t.id === 'indigo'
+                                ? '/zelle-library-preview.png'
+                                : t.id === 'black'
+                                  ? '/bybit-library-preview.jpg'
+                                  : '/dark-blue-reference.jpg'
+                  }
+                  alt={`${t.name} receipt reference`}
+                />
               ) : (
                 <>
                   <b>DEMO CO.</b>
