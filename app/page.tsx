@@ -1313,9 +1313,9 @@ function Gallery({
                                 ? '/coinbase-library-preview.jpeg'
                                 : t.id === 'indigo'
                                   ? '/zelle-library-preview.png'
-                                  : t.id === 'black'
-                                    ? '/bybit-library-preview.jpg'
-                                    : '/dark-blue-reference.jpg'
+                                    : t.id === 'black'
+                                      ? '/bybit-library-preview.jpg'
+                                      : '/binance-library-preview.png'
                     }
                     alt={`${t.name} receipt reference`}
                   />
