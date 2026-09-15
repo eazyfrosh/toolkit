@@ -123,6 +123,13 @@ const templates: Template[] = [
     accent: '#14866d',
     description: 'Formal payment confirmation',
   },
+  {
+    id: 'wells-fargo',
+    name: 'Wells Fargo',
+    category: 'Banking',
+    accent: '#c6282d',
+    description: 'Wire money details statement',
+  },
 ];
 export default function Home() {
   const [user, setUser] = useState<User | null>(null),
@@ -211,6 +218,17 @@ export default function Home() {
     citiDate: 'JUL 09, 2026',
     citiPayTo: 'CiTi ThankYou® Mastercard®',
     citiPayToEnding: '0930',
+    wellsRecipient: 'Dana Pease',
+    wellsRecipientAccount: 'United States ...4204',
+    wellsSource: 'EVERYDAY CHECKING ...8928',
+    wellsAmount: '$23,073.67',
+    wellsFees: '$30.00',
+    wellsTotal: '$23,103.67',
+    wellsSendDate: '02/23/2022',
+    wellsDeliverDate: '02/23/2022',
+    wellsMessage: 'Pay off on 2 Acres',
+    wellsStatus: 'Completed',
+    wellsConfirmation: 'OW00001992201633',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -388,13 +406,53 @@ export default function Home() {
                         ? 1600
                         : template.id === 'citi-bank'
                           ? 1500
-                          : 1200;
+                          : template.id === 'wells-fargo'
+                            ? 1608
+                            : 1200;
     const requiresSampleNotice = template.id === 'indigo';
     const safetyFooterHeight = watermarkEnabled || requiresSampleNotice ? 52 : 0;
     c.height = contentHeight + safetyFooterHeight;
     const x = c.getContext('2d');
     if (!x) return;
-    if (template.id === 'citi-bank') {
+    if (template.id === 'wells-fargo') {
+      x.fillStyle = '#fff';
+      x.fillRect(0, 0, 900, 1608);
+      x.fillStyle = '#c6282d';
+      x.fillRect(0, 0, 900, 106);
+      x.fillStyle = '#f6cc42';
+      x.fillRect(0, 106, 900, 10);
+      x.fillStyle = '#fff';
+      x.textAlign = 'center';
+      x.font = 'bold 49px Georgia, serif';
+      x.fillText('WELLS FARGO', 450, 73);
+      x.fillStyle = '#8f1d2b';
+      x.font = '48px Georgia, serif';
+      x.fillText('Wire Money - Details', 450, 177);
+      x.strokeStyle = '#cfcfcf';
+      x.lineWidth = 2;
+      x.beginPath(); x.moveTo(0, 218); x.lineTo(900, 218); x.stroke();
+      const wellsRow = (label: string, value: string, y: number, sub?: string) => {
+        x.textAlign = 'left';
+        x.fillStyle = '#3f3f42';
+        x.font = 'bold 31px Arial';
+        label.split('\n').forEach((line, index) => x.fillText(line, 40, y + index * 34));
+        x.font = '31px Arial';
+        x.fillText(value, 337, y);
+        if (sub) { x.fillText(sub, 337, y + 47); }
+        x.strokeStyle = '#d2d2d2';
+        x.beginPath(); x.moveTo(318, y + (sub ? 92 : 62)); x.lineTo(862, y + (sub ? 92 : 62)); x.stroke();
+      };
+      wellsRow('To', form.wellsRecipient || 'Dana Pease', 285, form.wellsRecipientAccount || 'United States ...4204');
+      wellsRow('From', form.wellsSource || 'EVERYDAY CHECKING ...8928', 466);
+      wellsRow('Amount', form.wellsAmount || '$23,073.67', 585);
+      wellsRow('Fees', form.wellsFees || '$30.00', 704);
+      wellsRow('Total from\naccount', form.wellsTotal || '$23,103.67', 823);
+      wellsRow('Send on', form.wellsSendDate || '02/23/2022', 989);
+      wellsRow('Deliver by', form.wellsDeliverDate || '02/23/2022', 1107);
+      wellsRow("Message to\nrecipient's\nbank", form.wellsMessage || 'Pay off on 2 Acres', 1227);
+      wellsRow('Status', form.wellsStatus || 'Completed', 1400);
+      wellsRow('Confirmation\nnumber', form.wellsConfirmation || 'OW00001992201633', 1518);
+    } else if (template.id === 'citi-bank') {
       x.fillStyle = '#fff';
       x.fillRect(0, 0, 900, 1500);
       x.fillStyle = '#101832';
@@ -1568,6 +1626,26 @@ function Editor({
                 {field('monoCurrency', 'Currency')}
               </div>
             </>
+          ) : template.id === 'wells-fargo' ? (
+            <>
+              {field('wellsRecipient', 'Recipient name')}
+              {field('wellsRecipientAccount', 'Recipient account')}
+              {field('wellsSource', 'Source account')}
+              <div className="row">
+                {field('wellsAmount', 'Amount')}
+                {field('wellsFees', 'Fees')}
+              </div>
+              {field('wellsTotal', 'Total from account')}
+              <div className="row">
+                {field('wellsSendDate', 'Send on')}
+                {field('wellsDeliverDate', 'Deliver by')}
+              </div>
+              {field('wellsMessage', "Message to recipient's bank")}
+              <div className="row">
+                {field('wellsStatus', 'Status')}
+                {field('wellsConfirmation', 'Confirmation number')}
+              </div>
+            </>
           ) : template.id === 'citi-bank' ? (
             <>
               {field('citiName', 'Customer name')}
@@ -1716,7 +1794,25 @@ function Editor({
             className={`receipt ${template.id} ${watermarkEnabled || template.id === 'indigo' ? 'with-safety-footer' : ''}`}
             style={{ '--accent': template.accent } as React.CSSProperties}
           >
-            {template.id === 'citi-bank' ? (
+            {template.id === 'wells-fargo' ? (
+              <article className="wells-fargo-preview">
+                <header><strong>WELLS FARGO</strong></header>
+                <h2>Wire Money - Details</h2>
+                <div className="wells-details">
+                  <div><b>To</b><span>{form.wellsRecipient || 'Dana Pease'}<em>{form.wellsRecipientAccount || 'United States ...4204'}</em></span></div>
+                  <div><b>From</b><span>{form.wellsSource || 'EVERYDAY CHECKING ...8928'}</span></div>
+                  <div><b>Amount</b><span>{form.wellsAmount || '$23,073.67'}</span></div>
+                  <div><b>Fees</b><span>{form.wellsFees || '$30.00'}</span></div>
+                  <div><b>Total from<br />account</b><span>{form.wellsTotal || '$23,103.67'}</span></div>
+                  <div><b>Send on</b><span>{form.wellsSendDate || '02/23/2022'}</span></div>
+                  <div><b>Deliver by</b><span>{form.wellsDeliverDate || '02/23/2022'}</span></div>
+                  <div><b>Message to<br />recipient's<br />bank</b><span>{form.wellsMessage || 'Pay off on 2 Acres'}</span></div>
+                  <div><b>Status</b><span>{form.wellsStatus || 'Completed'}</span></div>
+                  <div><b>Confirmation<br />number</b><span>{form.wellsConfirmation || 'OW00001992201633'}</span></div>
+                </div>
+                {watermarkEnabled && <div className="watermark safety-footer">DEMO • NOT A REAL TRANSACTION</div>}
+              </article>
+            ) : template.id === 'citi-bank' ? (
               <article className="citi-bank-preview">
                 <header>
                   <span>Make a Payment</span><b>ⓘ</b>
