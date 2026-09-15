@@ -116,6 +116,13 @@ const templates: Template[] = [
     accent: '#28bf8b',
     description: 'Deposit confirmation',
   },
+  {
+    id: 'citi-bank',
+    name: 'CiTi Bank',
+    category: 'Payments',
+    accent: '#14866d',
+    description: 'Formal payment confirmation',
+  },
 ];
 export default function Home() {
   const [user, setUser] = useState<User | null>(null),
@@ -196,6 +203,14 @@ export default function Home() {
     darkBlueTxid: 'Off-chain transfer 172490923091',
     darkBlueWallet: 'Funding Wallet',
     darkBlueDate: '2024-05-10 10:51:01',
+    citiName: 'CINDY',
+    citiConfirmation: '612060986782997',
+    citiSource: 'Guarantee Bank and Trust Company',
+    citiSourceEnding: '5901',
+    citiAmount: '$1,500.00',
+    citiDate: 'JUL 09, 2026',
+    citiPayTo: 'CiTi ThankYou® Mastercard®',
+    citiPayToEnding: '0930',
   });
   const ref = useRef<HTMLDivElement>(null),
     total = (Number(form.amount || 0) + Number(form.tax || 0)).toFixed(2);
@@ -370,14 +385,72 @@ export default function Home() {
                 : template.id === 'black'
                   ? 1759
                   : template.id === 'dark-blue'
-                    ? 1600
-                    : 1200;
+                        ? 1600
+                        : template.id === 'citi-bank'
+                          ? 1500
+                          : 1200;
     const requiresSampleNotice = template.id === 'indigo';
     const safetyFooterHeight = watermarkEnabled || requiresSampleNotice ? 52 : 0;
     c.height = contentHeight + safetyFooterHeight;
     const x = c.getContext('2d');
     if (!x) return;
-    if (template.id === 'studio') {
+    if (template.id === 'citi-bank') {
+      x.fillStyle = '#fff';
+      x.fillRect(0, 0, 900, 1500);
+      x.fillStyle = '#101832';
+      x.textAlign = 'left';
+      x.font = '600 28px Arial';
+      x.fillText('CiTi Bank', 72, 78);
+      x.font = '52px Arial';
+      x.fillText('ⓘ', 260, 78);
+      x.font = '400 48px Arial';
+      x.fillText('Thanks for Your Payment,', 72, 188);
+      x.fillText(form.citiName || 'CUSTOMER', 72, 246);
+      x.fillStyle = '#e9f7f2';
+      x.fillRect(72, 304, 756, 112);
+      x.fillStyle = '#14866d';
+      x.fillRect(72, 304, 756, 4);
+      x.fillRect(72, 412, 756, 4);
+      x.beginPath();
+      x.arc(112, 360, 25, 0, Math.PI * 2);
+      x.fill();
+      x.fillStyle = '#fff';
+      x.font = 'bold 30px Arial';
+      x.textAlign = 'center';
+      x.fillText('✓', 112, 370);
+      x.fillStyle = '#263b3d';
+      x.textAlign = 'left';
+      x.font = '500 22px Arial';
+      x.fillText('CONFIRMATION NUMBER', 158, 350);
+      x.font = '24px monospace';
+      x.fillText(form.citiConfirmation || 'SAMPLE-CONFIRMATION', 158, 382);
+      x.fillStyle = '#101832';
+      x.font = '24px Arial';
+      x.fillText('Your payment is scheduled. Look for a confirmation email in your inbox very soon.', 72, 468);
+      x.font = 'bold 24px Arial';
+      x.fillText('Make Another Payment  ›', 72, 514);
+      x.strokeStyle = '#d8dce4';
+      x.lineWidth = 2;
+      x.beginPath(); x.moveTo(72, 570); x.lineTo(828, 570); x.stroke();
+      const citiRow = (label: string, value: string, sub?: string) => {
+        x.fillStyle = '#18213f';
+        x.font = '500 17px Arial';
+        x.textAlign = 'left';
+        x.fillText(label.toUpperCase(), 72, citiY);
+        x.textAlign = 'right';
+        x.font = '500 23px Arial';
+        x.fillText(value, 828, citiY);
+        if (sub) { x.font = '18px Arial'; x.fillStyle = '#4c5364'; x.fillText(sub, 828, citiY + 27); }
+        citiY += sub ? 112 : 92;
+        x.strokeStyle = '#d8dce4';
+        x.beginPath(); x.moveTo(72, citiY - 48); x.lineTo(828, citiY - 48); x.stroke();
+      };
+      let citiY = 630;
+      citiRow('Payment source', form.citiSource || 'Bank account', `Account ending in ${form.citiSourceEnding || '0000'}`);
+      citiRow('Payment amount', form.citiAmount || '$0.00');
+      citiRow('Payment date', form.citiDate || 'DEMO DATE');
+      citiRow('Payment to', form.citiPayTo || 'Demo recipient', `Account ending in ${form.citiPayToEnding || '0000'}`);
+    } else if (template.id === 'studio') {
       const img = new Image();
       img.src = '/studio-reference.jpg';
       await new Promise<void>((resolve, reject) => {
@@ -1495,6 +1568,21 @@ function Editor({
                 {field('monoCurrency', 'Currency')}
               </div>
             </>
+          ) : template.id === 'citi-bank' ? (
+            <>
+              {field('citiName', 'Customer name')}
+              {field('citiConfirmation', 'Confirmation number')}
+              {field('citiSource', 'Payment source')}
+              <div className="row">
+                {field('citiSourceEnding', 'Source account ending')}
+                {field('citiAmount', 'Payment amount')}
+              </div>
+              {field('citiDate', 'Payment date')}
+              <div className="row">
+                {field('citiPayTo', 'Payment to')}
+                {field('citiPayToEnding', 'Payee account ending')}
+              </div>
+            </>
           ) : template.id === 'citrus' ? (
             <>
               <div className="row">
@@ -1628,7 +1716,24 @@ function Editor({
             className={`receipt ${template.id} ${watermarkEnabled || template.id === 'indigo' ? 'with-safety-footer' : ''}`}
             style={{ '--accent': template.accent } as React.CSSProperties}
           >
-            {template.id === 'studio' ? (
+            {template.id === 'citi-bank' ? (
+              <article className="citi-bank-preview">
+                <header>
+                  <span>CiTi Bank</span><b>ⓘ</b>
+                  <h2>Thanks for Your Payment,<br />{form.citiName || 'CUSTOMER'}</h2>
+                </header>
+                <section className="citi-confirmation"><strong>✓</strong><div><small>CONFIRMATION NUMBER</small><b>{form.citiConfirmation || 'SAMPLE-CONFIRMATION'}</b></div></section>
+                <p className="citi-message">Your payment is scheduled. Look for a confirmation email in your inbox very soon.</p>
+                <p className="citi-another">Make Another Payment&nbsp; ›</p>
+                <div className="citi-details">
+                  <div><small>PAYMENT SOURCE</small><span>{form.citiSource || 'Bank account'}<em>Account ending in {form.citiSourceEnding || '0000'}</em></span></div>
+                  <div><small>PAYMENT AMOUNT</small><span>{form.citiAmount || '$0.00'}</span></div>
+                  <div><small>PAYMENT DATE</small><span>{form.citiDate || 'DEMO DATE'}</span></div>
+                  <div><small>PAYMENT TO</small><span>{form.citiPayTo || 'Demo recipient'}<em>Account ending in {form.citiPayToEnding || '0000'}</em></span></div>
+                </div>
+                {watermarkEnabled && <div className="watermark safety-footer">DEMO • NOT A REAL TRANSACTION</div>}
+              </article>
+            ) : template.id === 'studio' ? (
               <>
                 <img
                   className="studio-fragment studio-avatar"

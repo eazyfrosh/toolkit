@@ -2626,3 +2626,59 @@ button {
     font-size: 38px;
   }
 }
+
+.citi-bank-preview {
+  width: 100%;
+  min-height: 720px;
+  padding: 34px 30px 0;
+  background: #fff;
+  color: #101832;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+.citi-bank-preview header > span {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.citi-bank-preview header > b { margin-left: 8px; font-size: 17px; color: #4c5364; }
+.citi-bank-preview h2 {
+  margin: 54px 0 28px;
+  font-size: clamp(27px, 4vw, 43px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -.04em;
+}
+.citi-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 18px;
+  border-top: 3px solid #14866d;
+  border-bottom: 3px solid #14866d;
+  background: #e9f7f2;
+}
+.citi-confirmation > strong {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: #14866d;
+  color: white;
+  font-size: 20px;
+}
+.citi-confirmation small, .citi-details small { display: block; color: #263b3d; font-size: 10px; letter-spacing: .08em; }
+.citi-confirmation b { display: block; margin-top: 3px; font: 15px monospace; }
+.citi-message { margin: 14px 0 6px; font-size: 15px; line-height: 1.45; }
+.citi-another { margin: 0 0 23px; font-size: 15px; font-weight: 700; }
+.citi-details { border-top: 2px solid #d8dce4; }
+.citi-details > div { display: flex; justify-content: space-between; gap: 20px; padding: 17px 0; border-bottom: 1px solid #d8dce4; }
+.citi-details > div > span { max-width: 63%; text-align: right; font-size: 15px; line-height: 1.25; }
+.citi-details em { display: block; margin-top: 3px; color: #4c5364; font-size: 11px; font-style: normal; }
+.citi-bank-preview .safety-footer { position: static; margin: 18px -30px 0; width: calc(100% + 60px); }
+@media (max-width: 700px) {
+  .citi-bank-preview { padding-inline: 20px; }
+  .citi-bank-preview .safety-footer { margin-left: -20px; width: calc(100% + 40px); }
+}
