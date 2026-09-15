@@ -1719,7 +1719,7 @@ function Editor({
             {template.id === 'citi-bank' ? (
               <article className="citi-bank-preview">
                 <header>
-                  <span>CiTi Bank</span><b>ⓘ</b>
+                  <span>Make a Payment</span><b>ⓘ</b>
                   <h2>Thanks for Your Payment,<br />{form.citiName || 'CUSTOMER'}</h2>
                 </header>
                 <section className="citi-confirmation"><strong>✓</strong><div><small>CONFIRMATION NUMBER</small><b>{form.citiConfirmation || 'SAMPLE-CONFIRMATION'}</b></div></section>
